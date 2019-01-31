@@ -1,0 +1,22 @@
+S -> Beta Alpha
+Gamma -> Beta Alpha
+Gamma -> Beta Beta
+Beta -> Gamma S
+S -> Alpha Alpha
+S -> Beta Beta
+Delta -> Alpha Beta
+Alpha -> S Gamma
+Beta -> Alpha Alpha
+Beta -> S Alpha
+P -> S Kappa
+Kappa -> Beta Beta
+S -> L P
+L -> S Beta
+Beta -> Alpha Alpha
+S -> Alpha Beta
+S -> S S
+S -> Beta Kappa
+S -> Beta Kappa
+S -> Beta Alpha
+Alpha -> 'alpha'
+Beta -> 'beta'

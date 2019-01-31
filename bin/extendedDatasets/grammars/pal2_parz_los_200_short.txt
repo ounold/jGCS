@@ -1,0 +1,18 @@
+S -> Beta Alpha
+Gamma -> Beta Alpha
+Gamma -> Beta Beta
+Beta -> Gamma S
+S -> Alpha Alpha
+S -> Beta Beta
+Delta -> Alpha Beta
+Alpha -> S Gamma
+Beta -> Alpha Alpha
+Beta -> S Alpha
+S -> Beta Beta
+H -> S Beta
+Omega -> Alpha S
+S -> Omega Alpha
+S -> Alpha Alpha
+S -> Beta H
+Beta -> 'beta'
+Alpha -> 'alpha'
