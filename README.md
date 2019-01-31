@@ -86,10 +86,10 @@ java -jar <JAR> [-g <GRAMMAR>] -d <DATASET> [-v <TEST_DATASET>] -c <CONFIG> -e <
 - `-e EVALUATION_OUTPUT` - nazwa pliku CSV, do którego zostaną zapisane wyniki ewaluacji
 - `-o GRAMMAR_OUTPUT` - (opcjonalny) nazwa pliku, do którego zostanie zapisana wynikowa gramatyka o najwyższej wartości F1
 - `-r REPEATS` - (opcjonalny) liczba wykonań
-- `-s` - (opcjonalny) tryb seryjny
+- `-s` - (opcjonalny) tryb wsadowy
 - `-t EXEC_TIMES` - (opcjonalny) nazwa pliku CSV, do którego zostaną zapisane średnie czasy wykonania poszczególnych części programu
 
-Aplikacja może pracować w dwóch trybach - zwykłym i seryjnym. W trybie seryjnym należy odpowiadające sobie gramatyki i bazy przykładów umieścić w plikach o takich samych nazwach w dwóch różnych katalogach, a następnie podać jako parametry `GRAMMAR`, `DATASET`, `TEST_DATASET` i `GRAMMAR_OUTPUT` ścieżki katalogów, zamiast ścieżek konkretnych plików.
+Aplikacja może pracować w dwóch trybach - seryjnym i wsadowym. W trybie wsadowym należy odpowiadające sobie gramatyki i bazy przykładów umieścić w plikach o takich samych nazwach w różnych katalogach, a następnie podać jako parametry `GRAMMAR`, `DATASET`, `TEST_DATASET` i `GRAMMAR_OUTPUT` ścieżki katalogów, zamiast ścieżek konkretnych plików.
 
 Plik wykonywalny i przykładowe dane oraz skrypty uruchomieniowe umieszczono w katalogu *bin*.
 
