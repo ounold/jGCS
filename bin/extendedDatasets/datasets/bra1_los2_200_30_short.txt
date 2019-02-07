@@ -1,0 +1,38 @@
+0 11 beta alpha alpha beta beta beta beta beta beta beta alpha
+0 11 alpha beta alpha beta alpha alpha beta beta alpha beta beta
+0 7 beta beta alpha alpha beta alpha beta
+0 10 alpha beta beta beta alpha alpha alpha beta alpha alpha
+0 8 beta alpha alpha beta alpha alpha beta alpha
+1 2 alpha beta
+1 4 alpha beta alpha beta
+0 1 alpha
+0 7 beta alpha beta beta alpha alpha alpha
+0 5 alpha beta beta beta alpha
+0 7 beta alpha beta alpha beta beta alpha
+1 6 alpha beta alpha beta alpha beta
+0 8 alpha beta alpha beta alpha alpha alpha beta
+1 10 alpha beta alpha beta alpha beta alpha beta alpha beta
+0 1 beta
+1 6 alpha beta alpha alpha beta beta
+0 2 beta beta
+0 8 alpha beta beta alpha beta alpha beta alpha
+0 11 beta alpha beta alpha alpha alpha alpha alpha alpha alpha alpha
+1 6 alpha alpha beta alpha beta beta
+0 2 alpha alpha
+1 8 alpha alpha beta alpha alpha beta beta beta
+0 8 beta alpha beta alpha beta alpha alpha alpha
+0 11 beta alpha alpha beta beta alpha beta alpha beta alpha beta
+0 5 alpha alpha beta alpha alpha
+0 8 beta alpha alpha alpha beta alpha alpha beta
+0 8 beta alpha alpha alpha beta alpha beta alpha
+1 8 alpha alpha beta alpha beta alpha beta beta
+1 10 alpha alpha alpha beta beta alpha beta alpha beta beta
+0 5 beta beta alpha beta alpha
+0 11 beta alpha beta alpha beta alpha beta beta beta alpha alpha
+0 6 alpha alpha beta beta alpha alpha
+0 8 alpha alpha beta alpha alpha beta alpha beta
+0 9 beta beta alpha alpha beta beta alpha alpha alpha
+0 3 beta beta alpha
+0 5 alpha alpha alpha alpha alpha
+0 8 alpha alpha beta beta alpha alpha alpha alpha
+0 3 alpha alpha beta
