@@ -8,6 +8,7 @@ import executionTime.EtMarkers;
 import executionTime.EtMarkersChain;
 import executionTime.ExecutionTimeService;
 import grammar.Grammar;
+import heurstic.HeuristicService;
 import induction.GrammarInductionService;
 import induction.InductionMode;
 import io.abbadingo.AbbadingoReaderService;
@@ -35,6 +36,7 @@ public class Application {
     public static final EtMarkersChain ETMC_DATASET = ETMC_APPLICATION.get(EtMarkers.ET_DATASET);
     public static final EtMarkersChain ETMC_EXECUTION = ETMC_DATASET.get(EtMarkers.ET_EXECUTION);
     public static final EtMarkersChain ETMC_INDUCTION = ETMC_EXECUTION.get(EtMarkers.ET_INDUCTION);
+    public static final EtMarkersChain ETM_HEURISTIC = ETMC_EXECUTION.get(EtMarkers.ET_HEURISTIC);
 
     private static final String SKIP_DUPLICATES = "grammar.skipDuplicates";
     private static final String RANDOM_PROBABILITIES = "grammar.randomProbabilities";
@@ -54,6 +56,7 @@ public class Application {
     private ExecutionTimeService executionTimeService;
     private StopConditionService stopConditionService;
     private GrammarIoService grammarIoService;
+    private HeuristicService heuristicService;
     private final Configuration configuration;
     private final Params params;
 
@@ -71,6 +74,7 @@ public class Application {
         stopConditionService = StopConditionService.getInstance();
         stopConditionService.initializeStopConditions();
         grammarIoService = GrammarIoService.getInstance();
+        heuristicService = HeuristicService.getInstance();
     }
 
     public void run() {
@@ -96,6 +100,7 @@ public class Application {
                                 executionTimeService.saveExecutionTime(ETMC_EXECUTION, () -> {
                                     uiService.info("----------Starting execution: %d/%d----------", currentExecution, params.getRepeats());
                                     Grammar grammar = loadGrammar(grammarPath, dataset);
+                                    runHeuristic(grammar, currentExecution);
                                     runInduction(iterations, mode, dataset, testDataset, grammar);
                                     saveEvaluation(evaluationOutput, datasetPath, currentExecution);
                                     updateBestResult(bestResultWrapper);
@@ -142,6 +147,11 @@ public class Application {
     private void runInduction(Integer iterations, InductionMode mode, Dataset dataset, Dataset testDataset, Grammar grammar) {
         uiService.info("Starting induction. Mode: %s. Iterations: %d.", mode, iterations);
         executionTimeService.saveExecutionTime(ETMC_INDUCTION, () -> grammarInductionService.run(grammar, dataset, testDataset, iterations));
+    }
+
+    private void runHeuristic(Grammar grammar, int execution) {
+        uiService.info("Starting heuristic. Algorithm: %s.", heuristicService.getAlgorithmType());
+        executionTimeService.saveExecutionTime(ETM_HEURISTIC, () -> heuristicService.run(grammar, execution));
     }
 
     private Grammar loadGrammar(Optional<Path> grammarPath, Dataset dataset) {

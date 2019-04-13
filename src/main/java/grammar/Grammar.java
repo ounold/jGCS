@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.prefs.PreferenceChangeEvent;
 import java.util.stream.IntStream;
 
 @Getter
@@ -61,4 +64,33 @@ public class Grammar {
         });
     }
 
+    public void addNonTerminalRule(Rule rule) {
+        nonTerminalRules.add(rule);
+    }
+
+    public void removeRule(Rule ruleToRemove) {
+        //todo: check what kind of rule is removed, don't check both lists
+        Optional<Rule> nonTerminal = nonTerminalRules.stream()
+                .filter(new EqualRules(ruleToRemove))
+                .findFirst();
+        nonTerminal.ifPresent(rule -> nonTerminalRules.remove(rule));
+
+        Optional<Rule> terminal = terminalRules.stream()
+                .filter(new EqualRules(ruleToRemove))
+                .findFirst();
+        terminal.ifPresent(rule -> terminalRules.remove(rule));
+    }
+
+    private static class EqualRules implements Predicate<Rule> {
+        private Rule comparedRule;
+
+        public EqualRules(Rule comparedRule) {
+            this.comparedRule = comparedRule;
+        }
+
+        @Override
+        public boolean test(Rule rule) {
+            return rule.equals(comparedRule);
+        }
+    }
 }
