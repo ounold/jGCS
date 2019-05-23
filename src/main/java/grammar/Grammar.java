@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.stream.IntStream;
@@ -21,7 +18,7 @@ import java.util.stream.IntStream;
 public class Grammar {
 
     private List<Rule> terminalRules = new ArrayList<>();
-    private List<Rule> nonTerminalRules = new ArrayList<>();
+    private List<Rule> nonTerminalRules = Collections.synchronizedList(new ArrayList<>());
     private List<Symbol> terminalSymbols = new ArrayList<>();
     private List<Symbol> nonTerminalSymbols = new ArrayList<>();
 

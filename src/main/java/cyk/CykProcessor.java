@@ -2,6 +2,7 @@ package cyk;
 
 import configuration.Configuration;
 import configuration.ConfigurationService;
+import covering.CoveringService;
 import dataset.Sequence;
 import grammar.Grammar;
 import grammar.Rule;
@@ -15,6 +16,8 @@ import rulesTable.RulesTable;
 import rulesTable.TableCell;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -34,6 +37,13 @@ public abstract class CykProcessor {
     private static ExecutorService executors;
 
     private Configuration configuration = ConfigurationService.getConfiguration();
+    private CoveringService coveringService = CoveringService.getInstance();
+
+    private boolean enableCovering;
+
+    public CykProcessor(boolean enableCovering) {
+        this.enableCovering = enableCovering;
+    }
 
     private void prepareJobs(int sentenceLength) {
         for (int i = 1; i < sentenceLength; i++) {
@@ -43,16 +53,22 @@ public abstract class CykProcessor {
         }
     }
 
-    private void initFirstRow(Sequence sentence) {
+    private void initFirstRow(Sequence sentence) { //todo: add covering
         List<String> symbols = sentence.symbolList();
+        boolean ruleFound = false;
         for (int i = 0; i < sentence.length(); i++) {
             for (Rule rule : grammar.getRules()) {
                 if (rule.getRight1().getValue().equals(symbols.get(i))) {
                     ProbabilityCell probabilityCell = probabilityArray.add(0, i, rule.getLeft(), rule.getProbability());
                     rulesTable.get(0, i).getCellRules().add(createCellRule(rule, probabilityCell, i));
+                    ruleFound = true;
                 }
             }
             rulesTable.get(0, i).getEvaluated().compareAndSet(false, true);
+
+            if (enableCovering && !ruleFound) {
+                System.out.println("aaaaaaaa"); //todo: remove
+            }
         }
 
     }
@@ -90,21 +106,55 @@ public abstract class CykProcessor {
             int parentTwoI = i - k - 1;
             int parentTwoJ = j + k + 1;
 
+            boolean ruleFound = false;
+
             waitUntilEvaluated(parentOneI, parentOneJ, parentTwoI, parentTwoJ);
 
-            for (Rule rule : grammar.getNonTerminalRules()) {
+            synchronized (grammar.getNonTerminalRules()) {
+                for (Rule rule : grammar.getNonTerminalRules()) {
 
-                if (probabilityArray.get(parentOneI, parentOneJ, rule.getRight1()) != ProbabilityCell.EMPTY_CELL
-                        && probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2()) != ProbabilityCell.EMPTY_CELL) {
+                    if (probabilityArray.get(parentOneI, parentOneJ, rule.getRight1()) != ProbabilityCell.EMPTY_CELL
+                            && probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2()) != ProbabilityCell.EMPTY_CELL) {
 
-                    ProbabilityCell parentCellProbability = probabilityArray.get(parentOneI, parentOneJ, rule.getRight1());
-                    ProbabilityCell parent2CellProbability = probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2());
-                    ProbabilityCell probabilityCell = probabilityArray.add(i, j, rule.getLeft(), calculateProbability(parentCellProbability, parent2CellProbability, rule));
-                    rulesTable.get(i, j).getCellRules().add(createCellRule(i, j, k, rule, probabilityCell));
+                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, k, parentOneI, parentOneJ, parentTwoI, parentTwoJ, rule);
+                        rulesTable.get(i, j).getCellRules().add(createCellRule(i, j, k, rule, probabilityCell));
 
+                        ruleFound = true;
+                    }
+                }
+
+                if (enableCovering && !ruleFound) {
+                    Symbol rightSymbol1 = getSymbolByParents(parentOneI, parentOneJ);
+                    Symbol rightSymbol2 = getSymbolByParents(parentTwoI, parentTwoJ);
+
+                    List<Rule> coveringRules = coveringService.run(grammar, rightSymbol1, rightSymbol2);
+
+                    for (Rule coveringRule : coveringRules) {
+                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, k, parentOneI, parentOneJ, parentTwoI, parentTwoJ, coveringRule); //todo: handle result of Nakamura's operator
+                        rulesTable.get(i, j).getCellRules().add(createCellRule(i, j, k, coveringRule, probabilityCell));
+                        grammar.addNonTerminalRule(coveringRule);
+                    }
                 }
             }
         }
+    }
+
+    private Symbol getSymbolByParents(int parentI, int parentJ) {
+        Symbol symbol = null;
+        for (Symbol nonTerminalSymbol : grammar.getNonTerminalSymbols()) {
+            ProbabilityCell probabilityCell = probabilityArray.get(parentI, parentJ, nonTerminalSymbol);
+            if (probabilityCell != ProbabilityCell.EMPTY_CELL) {
+                symbol = nonTerminalSymbol;
+            }
+        }
+        return symbol;
+    }
+
+
+    private ProbabilityCell fillProbabilityCell(int i, int j, int k, int parentOneI, int parentOneJ, int parentTwoI, int parentTwoJ, Rule rule) { //todo: rename
+        ProbabilityCell parentCellProbability = probabilityArray.get(parentOneI, parentOneJ, rule.getRight1());
+        ProbabilityCell parent2CellProbability = probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2());
+        return probabilityArray.add(i, j, rule.getLeft(), calculateProbability(parentCellProbability, parent2CellProbability, rule));
     }
 
     protected abstract CellRule createCellRule(int i, int j, int k, Rule rule, ProbabilityCell probabilityCell);
@@ -142,7 +192,6 @@ public abstract class CykProcessor {
             throw new IllegalStateException(e);
         }
         executors.shutdown();
-
         double sentenceProbability = calculateSentenceProbability();
 
         return new CykResult(rulesTable, probabilityArray, sentenceProbability, isParsed(sentenceProbability, testSentence.length()));

@@ -2,6 +2,7 @@ package application;
 
 import configuration.Configuration;
 import configuration.ConfigurationService;
+import covering.CoveringService;
 import dataset.Dataset;
 import evaluation.EvaluationService;
 import executionTime.EtMarkers;
@@ -43,6 +44,7 @@ public class Application {
 
     private static final String CE_MODE = "ce.mode";
     private static final String CE_ITERATIONS = "ce.iterations";
+    private static final String CYK_COVERING_ENABLED = "cyk.coveringEnabled";
 
     private ParamsService paramsService = ParamsService.getInstance();
     private ConfigurationService configurationService = ConfigurationService.getInstance();
@@ -146,7 +148,7 @@ public class Application {
 
     private void runInduction(Integer iterations, InductionMode mode, Dataset dataset, Dataset testDataset, Grammar grammar) {
         uiService.info("Starting induction. Mode: %s. Iterations: %d.", mode, iterations);
-        executionTimeService.saveExecutionTime(ETMC_INDUCTION, () -> grammarInductionService.run(grammar, dataset, testDataset, iterations));
+        executionTimeService.saveExecutionTime(ETMC_INDUCTION, () -> grammarInductionService.run(grammar, dataset, testDataset, iterations, configuration.getBoolean(CYK_COVERING_ENABLED)));
     }
 
     private void runHeuristic(Grammar grammar, int execution) {

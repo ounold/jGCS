@@ -73,7 +73,7 @@ class ConfusionMatrixTest {
         ConfusionMatrix matrix = new ConfusionMatrix();
 
         // when
-        matrix.update(expected, actual);
+        matrix.update(expected, actual, 0.0); //todo: change
 
         // then
         assertEquals(matrix.getTruePositives(), tp);

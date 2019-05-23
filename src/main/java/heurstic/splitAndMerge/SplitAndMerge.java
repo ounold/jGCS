@@ -37,36 +37,38 @@ public class SplitAndMerge implements Heuristic {
         List<Symbol> nonTerminalSymbols = grammar.getNonTerminalSymbols();
         final Symbol splitSymbol = nonTerminalSymbols.get(random.nextInt(nonTerminalSymbols.size()));
         List<Symbol> unusedSymbolsPair = findUnusedNonTerminalSymbols(grammar);
-        if (unusedSymbolsPair.isEmpty()) {
-            throw new IllegalStateException("Not enough unused non terminal symbols to execute split phase");
-        }
-        Symbol newSymbol1 = unusedSymbolsPair.get(0);
-        Symbol newSymbol2 = unusedSymbolsPair.get(1);
+        if (!unusedSymbolsPair.isEmpty()) {
 
-        grammar.getRules().stream().forEach(new Consumer<Rule>() {
-            @Override
-            public void accept(Rule rule) {
-                if (rule.getLeft().equals(splitSymbol)) {
-                    grammar.removeRule(rule);
-                    Rule newRule1 = new Rule(newSymbol1, rule.getRight1(), rule.getRight2(), 0.0);
-                    Rule newRule2 = new Rule(newSymbol2, rule.getRight1(), rule.getRight2(), 0.0);
-                    grammar.addNonTerminalRule(newRule1);
-                    grammar.addNonTerminalRule(newRule2);
-                } else if (rule.getRight1().equals(splitSymbol)) {
-                    grammar.removeRule(rule);
-                    Rule newRule1 = new Rule(rule.getLeft(), newSymbol1, rule.getRight2(), 0.0);
-                    Rule newRule2 = new Rule(rule.getLeft(), newSymbol2, rule.getRight2(), 0.0);
-                    grammar.addNonTerminalRule(newRule1);
-                    grammar.addNonTerminalRule(newRule2);
-                } else if (rule.getRight2() != null && rule.getRight2().equals(splitSymbol)) {
-                    grammar.removeRule(rule);
-                    Rule newRule1 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol1, 0.0);
-                    Rule newRule2 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol2, 0.0);
-                    grammar.addNonTerminalRule(newRule1);
-                    grammar.addNonTerminalRule(newRule2);
+            Symbol newSymbol1 = unusedSymbolsPair.get(0);
+            Symbol newSymbol2 = unusedSymbolsPair.get(1);
+
+            grammar.getRules().stream().forEach(new Consumer<Rule>() {
+                @Override
+                public void accept(Rule rule) {
+                    if (rule.getLeft().equals(splitSymbol)) {
+                        grammar.removeRule(rule);
+                        Rule newRule1 = new Rule(newSymbol1, rule.getRight1(), rule.getRight2(), 0.0);
+                        Rule newRule2 = new Rule(newSymbol2, rule.getRight1(), rule.getRight2(), 0.0);
+                        grammar.addNonTerminalRule(newRule1);
+                        grammar.addNonTerminalRule(newRule2);
+                    } else if (rule.getRight1().equals(splitSymbol)) {
+                        grammar.removeRule(rule);
+                        Rule newRule1 = new Rule(rule.getLeft(), newSymbol1, rule.getRight2(), 0.0);
+                        Rule newRule2 = new Rule(rule.getLeft(), newSymbol2, rule.getRight2(), 0.0);
+                        grammar.addNonTerminalRule(newRule1);
+                        grammar.addNonTerminalRule(newRule2);
+                    } else if (rule.getRight2() != null && rule.getRight2().equals(splitSymbol)) {
+                        grammar.removeRule(rule);
+                        Rule newRule1 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol1, 0.0);
+                        Rule newRule2 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol2, 0.0);
+                        grammar.addNonTerminalRule(newRule1);
+                        grammar.addNonTerminalRule(newRule2);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            System.out.println("Not enough unused non terminal symbols to execute split phase");
+        }
     }
 
     private void merge(Grammar grammar) {

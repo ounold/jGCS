@@ -21,6 +21,7 @@ import stopCondition.StopConditionService;
 public class GrammarInductionService {
 
     public static final EtMarkersChain ETMC_NORMALIZATION = Application.ETMC_INDUCTION.get(EtMarkers.ET_NORMALIZATION);
+    public static final EtMarkersChain ETMC_CORRECTION = Application.ETMC_INDUCTION.get(EtMarkers.ET_CORRECTION);
     public static final EtMarkersChain ETMC_EVALUATION = Application.ETMC_INDUCTION.get(EtMarkers.ET_EVALUATION);
     public static final EtMarkersChain ETMC_ITERATION = Application.ETMC_INDUCTION.get(EtMarkers.ET_ITERATION);
     public static final EtMarkersChain ETMC_SEQUENCE = ETMC_ITERATION.get(EtMarkers.ET_SEQUENCE);
@@ -50,7 +51,7 @@ public class GrammarInductionService {
         return instance;
     }
 
-    public void run(Grammar grammar, Dataset dataset, Dataset testDataset, int iterations) {
+    public void run(Grammar grammar, Dataset dataset, Dataset testDataset, int iterations, boolean enableCovering) {
         executionTimeService.saveExecutionTime(ETMC_NORMALIZATION, () -> correctionService.normalizeRules(grammar));
         IoDataset ioDataset = neighbourhoodService.buildNeighbourhoods(dataset);
         int i = 0;
@@ -72,11 +73,12 @@ public class GrammarInductionService {
                     executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
                         insideOutsideService.resetInsideOutsideValues(grammar);
                         CykResult cykResult = executionTimeService.saveExecutionTime(ETMC_CYK,
-                                () -> cykService.runCyk(ioSequence.getSequence(), grammar));
+                                () -> cykService.runCyk(ioSequence.getSequence(), grammar, enableCovering));
                         executionTimeService.saveExecutionTime(ETMC_IO_COUNTS,
                                 () -> insideOutsideService.updateRulesCounts(grammar, cykResult, ioSequence));
                     });
                 });
+                executionTimeService.saveExecutionTime(ETMC_CORRECTION, () -> correctionService.correctGrammar(grammar));
                 executionTimeService.saveExecutionTime(ETMC_IO_PROBABILITIES,
                         () -> insideOutsideService.updateRulesProbabilities(grammar));
             });

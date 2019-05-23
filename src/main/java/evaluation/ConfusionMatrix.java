@@ -45,13 +45,13 @@ public class ConfusionMatrix {
         return 2 * (getSensitivity() * getPrecision()) / (getSensitivity() + getPrecision());
     }
 
-    public void update(boolean expected, boolean actual) {
+    public void update(boolean expected, boolean actual, double probability) {
         if (actual)
-            if (expected)
+            if (expected && probability > 0.0)
                 truePositives++;
             else
                 falsePositives++;
-        else if (expected)
+        else if (expected && probability < 0.0)
             falseNegatives++;
         else
             trueNegatives++;

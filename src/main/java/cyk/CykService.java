@@ -22,15 +22,15 @@ public class CykService {
         return instance;
     }
 
-    public CykResult runCyk(Sequence testSentence, Grammar grammar) {
-        CykProcessor cykProcessor = getCyk();
+    public CykResult runCyk(Sequence testSentence, Grammar grammar, boolean enableCovering) {
+        CykProcessor cykProcessor = getCyk(enableCovering);
         return cykProcessor.runCyk(testSentence, grammar);
     }
 
-    private CykProcessor getCyk() {
+    private CykProcessor getCyk(boolean enableCovering) {
         if (configuration.getBoolean(CALCULATE_INSIDES))
-            return new CykWithInsidesProcessor();
-        return new PureCykProcessor();
+            return new CykWithInsidesProcessor(enableCovering);
+        return new PureCykProcessor(enableCovering);
     }
 
 }
