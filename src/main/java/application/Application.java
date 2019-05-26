@@ -58,7 +58,6 @@ public class Application {
     private ExecutionTimeService executionTimeService;
     private StopConditionService stopConditionService;
     private GrammarIoService grammarIoService;
-    private HeuristicService heuristicService;
     private final Configuration configuration;
     private final Params params;
 
@@ -76,7 +75,6 @@ public class Application {
         stopConditionService = StopConditionService.getInstance();
         stopConditionService.initializeStopConditions();
         grammarIoService = GrammarIoService.getInstance();
-        heuristicService = HeuristicService.getInstance();
     }
 
     public void run() {
@@ -102,7 +100,6 @@ public class Application {
                                 executionTimeService.saveExecutionTime(ETMC_EXECUTION, () -> {
                                     uiService.info("----------Starting execution: %d/%d----------", currentExecution, params.getRepeats());
                                     Grammar grammar = loadGrammar(grammarPath, dataset);
-                                    runHeuristic(grammar, currentExecution);
                                     runInduction(iterations, mode, dataset, testDataset, grammar);
                                     saveEvaluation(evaluationOutput, datasetPath, currentExecution);
                                     updateBestResult(bestResultWrapper);
@@ -149,11 +146,6 @@ public class Application {
     private void runInduction(Integer iterations, InductionMode mode, Dataset dataset, Dataset testDataset, Grammar grammar) {
         uiService.info("Starting induction. Mode: %s. Iterations: %d.", mode, iterations);
         executionTimeService.saveExecutionTime(ETMC_INDUCTION, () -> grammarInductionService.run(grammar, dataset, testDataset, iterations, configuration.getBoolean(CYK_COVERING_ENABLED)));
-    }
-
-    private void runHeuristic(Grammar grammar, int execution) {
-        uiService.info("Starting heuristic. Algorithm: %s.", heuristicService.getAlgorithmType());
-        executionTimeService.saveExecutionTime(ETM_HEURISTIC, () -> heuristicService.run(grammar, execution));
     }
 
     private Grammar loadGrammar(Optional<Path> grammarPath, Dataset dataset) {

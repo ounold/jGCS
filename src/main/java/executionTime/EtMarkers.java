@@ -21,5 +21,6 @@ public final class EtMarkers {
     public static final String ET_INSIDE_OUTSIDE_VALUES = "InsideOutsideValues";
     public static final String ET_COUNTS = "Counts";
     public static final String ET_HEURISTIC = "Heuristic";
+    public static final String ET_REMOVING_RULES = "RemovingZeroProbabilitiesRules";
 
 }

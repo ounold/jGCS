@@ -53,22 +53,16 @@ public abstract class CykProcessor {
         }
     }
 
-    private void initFirstRow(Sequence sentence) { //todo: add covering
+    private void initFirstRow(Sequence sentence) {
         List<String> symbols = sentence.symbolList();
-        boolean ruleFound = false;
         for (int i = 0; i < sentence.length(); i++) {
             for (Rule rule : grammar.getRules()) {
                 if (rule.getRight1().getValue().equals(symbols.get(i))) {
                     ProbabilityCell probabilityCell = probabilityArray.add(0, i, rule.getLeft(), rule.getProbability());
                     rulesTable.get(0, i).getCellRules().add(createCellRule(rule, probabilityCell, i));
-                    ruleFound = true;
                 }
             }
             rulesTable.get(0, i).getEvaluated().compareAndSet(false, true);
-
-            if (enableCovering && !ruleFound) {
-                System.out.println("aaaaaaaa"); //todo: remove
-            }
         }
 
     }
@@ -151,7 +145,7 @@ public abstract class CykProcessor {
     }
 
 
-    private ProbabilityCell fillProbabilityCell(int i, int j, int k, int parentOneI, int parentOneJ, int parentTwoI, int parentTwoJ, Rule rule) { //todo: rename
+    private ProbabilityCell fillProbabilityCell(int i, int j, int k, int parentOneI, int parentOneJ, int parentTwoI, int parentTwoJ, Rule rule) {
         ProbabilityCell parentCellProbability = probabilityArray.get(parentOneI, parentOneJ, rule.getRight1());
         ProbabilityCell parent2CellProbability = probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2());
         return probabilityArray.add(i, j, rule.getLeft(), calculateProbability(parentCellProbability, parent2CellProbability, rule));

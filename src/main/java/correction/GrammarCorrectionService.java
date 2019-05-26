@@ -116,4 +116,11 @@ public class GrammarCorrectionService {
                 .collect(Collectors.toList()));
     }
 
+    public void removeZeroProbabilitiesRules(Grammar grammar) { //todo: write some tests
+        for (Rule rule : grammar.getNonTerminalRules()) {
+            if (rule.getProbability() == 0) {
+                grammar.removeRule(rule);
+            }
+        }
+    }
 }
