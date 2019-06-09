@@ -7,6 +7,7 @@ import dataset.Sequence;
 import grammar.Grammar;
 import grammar.Rule;
 import grammar.Symbol;
+import grammar.SymbolType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import probabilityArray.ProbabilityArray;
@@ -16,8 +17,6 @@ import rulesTable.RulesTable;
 import rulesTable.TableCell;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -37,9 +36,10 @@ public abstract class CykProcessor {
     private static ExecutorService executors;
 
     private Configuration configuration = ConfigurationService.getConfiguration();
-    private CoveringService coveringService = CoveringService.getInstance();
+    private CoveringService coveringService = new CoveringService();
 
     private boolean enableCovering;
+    private double parsingThreshold  = configuration.getDouble(PARSING_THRESHOLD);
 
     public CykProcessor(boolean enableCovering) {
         this.enableCovering = enableCovering;
@@ -56,7 +56,7 @@ public abstract class CykProcessor {
     private void initFirstRow(Sequence sentence) {
         List<String> symbols = sentence.symbolList();
         for (int i = 0; i < sentence.length(); i++) {
-            for (Rule rule : grammar.getRules()) {
+            for (Rule rule : grammar.getTerminalRules()) {
                 if (rule.getRight1().getValue().equals(symbols.get(i))) {
                     ProbabilityCell probabilityCell = probabilityArray.add(0, i, rule.getLeft(), rule.getProbability());
                     rulesTable.get(0, i).getCellRules().add(createCellRule(rule, probabilityCell, i));
@@ -73,7 +73,6 @@ public abstract class CykProcessor {
     }
 
     private boolean parseSentence() {
-
         while (true) {
             TableCell cellToAnalyse = jobs.poll();
 
@@ -83,15 +82,16 @@ public abstract class CykProcessor {
 
             int i = cellToAnalyse.getXCor();
             int j = cellToAnalyse.getYCor();
+            boolean isLastCell = jobs.size() == 0;
 
-            fillCell(i, j);
+            fillCell(i, j, isLastCell);
 
             rulesTable.get(i, j).getEvaluated().compareAndSet(false, true);
         }
 
     }
 
-    private void fillCell(int i, int j) {
+    private void fillCell(int i, int j, boolean islastCell) {
         for (int k = 0; k < i; k++) {
 
             int parentOneI = k;
@@ -101,6 +101,7 @@ public abstract class CykProcessor {
             int parentTwoJ = j + k + 1;
 
             boolean ruleFound = false;
+            boolean hasStartSymbol = false;
 
             waitUntilEvaluated(parentOneI, parentOneJ, parentTwoI, parentTwoJ);
 
@@ -110,21 +111,22 @@ public abstract class CykProcessor {
                     if (probabilityArray.get(parentOneI, parentOneJ, rule.getRight1()) != ProbabilityCell.EMPTY_CELL
                             && probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2()) != ProbabilityCell.EMPTY_CELL) {
 
-                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, k, parentOneI, parentOneJ, parentTwoI, parentTwoJ, rule);
+                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, parentOneI, parentOneJ, parentTwoI, parentTwoJ, rule);
                         rulesTable.get(i, j).getCellRules().add(createCellRule(i, j, k, rule, probabilityCell));
 
                         ruleFound = true;
+                        hasStartSymbol = rule.getLeft().getSymbolType().equals(SymbolType.START) && rule.getProbability() > parsingThreshold;
                     }
                 }
 
-                if (enableCovering && !ruleFound) {
+                if (enableCovering && (!ruleFound || (islastCell && !hasStartSymbol))) {
                     Symbol rightSymbol1 = getSymbolByParents(parentOneI, parentOneJ);
                     Symbol rightSymbol2 = getSymbolByParents(parentTwoI, parentTwoJ);
 
-                    List<Rule> coveringRules = coveringService.run(grammar, rightSymbol1, rightSymbol2);
+                    List<Rule> coveringRules = coveringService.run(grammar, rightSymbol1, rightSymbol2, islastCell, hasStartSymbol);
 
                     for (Rule coveringRule : coveringRules) {
-                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, k, parentOneI, parentOneJ, parentTwoI, parentTwoJ, coveringRule); //todo: handle result of Nakamura's operator
+                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, parentOneI, parentOneJ, parentTwoI, parentTwoJ, coveringRule); //todo: handle result of Nakamura's operator
                         rulesTable.get(i, j).getCellRules().add(createCellRule(i, j, k, coveringRule, probabilityCell));
                         grammar.addNonTerminalRule(coveringRule);
                     }
@@ -145,7 +147,7 @@ public abstract class CykProcessor {
     }
 
 
-    private ProbabilityCell fillProbabilityCell(int i, int j, int k, int parentOneI, int parentOneJ, int parentTwoI, int parentTwoJ, Rule rule) {
+    private ProbabilityCell fillProbabilityCell(int i, int j, int parentOneI, int parentOneJ, int parentTwoI, int parentTwoJ, Rule rule) {
         ProbabilityCell parentCellProbability = probabilityArray.get(parentOneI, parentOneJ, rule.getRight1());
         ProbabilityCell parent2CellProbability = probabilityArray.get(parentTwoI, parentTwoJ, rule.getRight2());
         return probabilityArray.add(i, j, rule.getLeft(), calculateProbability(parentCellProbability, parent2CellProbability, rule));
@@ -188,11 +190,11 @@ public abstract class CykProcessor {
         executors.shutdown();
         double sentenceProbability = calculateSentenceProbability();
 
-        return new CykResult(rulesTable, probabilityArray, sentenceProbability, isParsed(sentenceProbability, testSentence.length()));
+        return new CykResult(rulesTable, probabilityArray, sentenceProbability, isParsed(sentenceProbability));
     }
 
-    private boolean isParsed(double sentenceProbability, int length) {
-        return configuration.getDouble(PARSING_THRESHOLD) < Math.pow(sentenceProbability, 1./length);
+    private boolean isParsed(double sentenceProbability) {
+        return sentenceProbability > parsingThreshold;
     }
 
     private double calculateSentenceProbability() {

@@ -1,5 +1,5 @@
 package covering;
 
 public enum CoveringOperatorType {
-    STANDARD, NAKAMURA
+    AGGRESSIVE, NAKAMURA, PROGRESSIVE
 }

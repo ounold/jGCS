@@ -1,6 +1,7 @@
 package induction;
 
 import application.Application;
+import configuration.ConfigurationService;
 import correction.GrammarCorrectionService;
 import cyk.CykResult;
 import cyk.CykService;
@@ -43,6 +44,7 @@ public class GrammarInductionService {
     private ExecutionTimeService executionTimeService = ExecutionTimeService.getInstance();
     private StopConditionService stopConditionService = StopConditionService.getInstance();
     private HeuristicService heuristicService = HeuristicService.getInstance();
+    private ConfigurationService configurationService = ConfigurationService.getInstance();
 
     private static GrammarInductionService instance;
 
@@ -61,19 +63,25 @@ public class GrammarInductionService {
         int iteration = 0;
         while (!stopConditionService.shouldStop()) {
             iteration++;
+            System.out.println("IITERACJA: " + iteration);
             final int iter = iteration;
             executionTimeService.saveExecutionTime(ETM_HEURISTIC, () -> heuristicService.run(grammar, iter));
             ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
-                executionTimeService.saveExecutionTime(ETMC_CYK, () -> cykService.runCyk(ioSequence.getSequence(), grammar, enableCovering));
+                executionTimeService.saveExecutionTime(ETMC_CYK,
+                        () -> cykService.runCyk(ioSequence.getSequence(), grammar, enableCovering && ioSequence.getSequence().isPositive()));
             }));
             for (int i = 0; i < iterations; i++) {
-                ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
-                    insideOutsideService.resetInsideOutsideValues(grammar);
-                    CykResult cykResult = executionTimeService.saveExecutionTime(ETMC_CYK,
-                            () -> cykService.runCyk(ioSequence.getSequence(), grammar, false));
-                    executionTimeService.saveExecutionTime(ETMC_IO_COUNTS,
-                            () -> insideOutsideService.updateRulesCounts(grammar, cykResult, ioSequence));
-                }));
+                final int trainIter = i;
+                executionTimeService.saveExecutionTime(ETMC_ITERATION, () -> {
+                    uiService.state("Iteration: %d", trainIter + 1);
+                    insideOutsideService.resetInsideOutsideValuesAndCounts(grammar);
+                    ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
+                        insideOutsideService.resetInsideOutsideValues(grammar);
+                        CykResult cykResult = executionTimeService.saveExecutionTime(ETMC_CYK, () -> cykService.runCyk(ioSequence.getSequence(), grammar, false));
+                        executionTimeService.saveExecutionTime(ETMC_IO_COUNTS, () -> insideOutsideService.updateRulesCounts(grammar, cykResult, ioSequence));
+                    }));
+                    executionTimeService.saveExecutionTime(ETMC_IO_PROBABILITIES, () -> insideOutsideService.updateRulesProbabilities(grammar));
+                });
             }
             executionTimeService.saveExecutionTime(ETMC_REMOVING_RULES, () -> correctionService.removeZeroProbabilitiesRules(grammar));
             evaluationService.saveEvaluation(iter, () -> executionTimeService.saveExecutionTime(ETMC_EVALUATION,

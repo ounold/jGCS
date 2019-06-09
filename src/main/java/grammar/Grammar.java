@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.prefs.PreferenceChangeEvent;
 import java.util.stream.IntStream;
 
 @Getter
@@ -61,12 +60,19 @@ public class Grammar {
         });
     }
 
+    public void addRule(Rule rule) {
+        if (rule.getRight1().getSymbolType().equals(SymbolType.TERMINAL)) {
+            terminalRules.add(rule);
+        } else {
+            nonTerminalRules.add(rule);
+        }
+    }
+
     public void addNonTerminalRule(Rule rule) {
         nonTerminalRules.add(rule);
     }
 
     public void removeRule(Rule ruleToRemove) {
-        //todo: check what kind of rule is removed, don't check both lists
         Optional<Rule> nonTerminal = nonTerminalRules.stream()
                 .filter(new EqualRules(ruleToRemove))
                 .findFirst();

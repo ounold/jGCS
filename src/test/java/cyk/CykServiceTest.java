@@ -33,7 +33,7 @@ class CykServiceTest extends AbstractServiceTest {
 
     @Test
     public void standardCoveringTestCase() {
-        configurationService.overrideProperty("covering.operator", "STANDARD");
+        configurationService.overrideProperty("covering.operator", "AGGRESSIVE");
         runTestCase(new StandardCoveringGrammarTestCase(), true);
     }
 

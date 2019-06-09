@@ -46,7 +46,7 @@ public class EvaluationService {
         ConfusionMatrix confusionMatrix = new ConfusionMatrix();
         dataset.getSequences().forEach(sequence -> {
             CykResult cykResult = cykService.runCyk(sequence, grammar, false);
-            confusionMatrix.update(sequence.isPositive(), cykResult.isParsed(), cykResult.getSentenceProbability());
+            confusionMatrix.update(sequence.isPositive(), cykResult.isParsed());
         });
         return new Evaluation(grammarIoService.writeGrammar(grammar), confusionMatrix);
     }

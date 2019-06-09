@@ -24,7 +24,12 @@ public class CykService {
 
     public CykResult runCyk(Sequence testSentence, Grammar grammar, boolean enableCovering) {
         CykProcessor cykProcessor = getCyk(enableCovering);
-        return cykProcessor.runCyk(testSentence, grammar);
+        CykResult result = cykProcessor.runCyk(testSentence, grammar);
+
+        if (enableCovering && !result.isParsed()) {
+            return runCyk(testSentence, grammar, true);
+        }
+        return result;
     }
 
     private CykProcessor getCyk(boolean enableCovering) {

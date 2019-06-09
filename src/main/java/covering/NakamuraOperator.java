@@ -5,24 +5,21 @@ import grammar.Rule;
 import grammar.Symbol;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class NakamuraOperator extends Operator {
 
     @Override
-    public List<Rule> generateRule(Grammar grammar, Symbol rightSymbol1, Symbol rightSymbol2) {
+    public List<Rule> generateRule(Grammar grammar, Symbol rightSymbol1, Symbol rightSymbol2, boolean isLastCell, boolean hasStartSymbol) {
         Symbol randomSymbol = getRandomNonTerminalSymbol(grammar);
-        Rule newRule = new Rule(randomSymbol, rightSymbol1, rightSymbol2, 0.0); //todo: probability
+        Rule newRule = new Rule(randomSymbol, rightSymbol1, rightSymbol2, 1.0);
         List<Rule> newRules = new ArrayList<>();
         newRules.add(newRule);
 
         while (!isRuleEffective(newRule, grammar)) {
             Symbol randomSymbol1 = getRandomNonTerminalSymbol(grammar);
             Symbol randomSymbol2 = getRandomNonTerminalSymbol(grammar);
-            newRule = new Rule(randomSymbol1, newRule.getLeft(), randomSymbol2, 0.0); //todo: prob
+            newRule = new Rule(randomSymbol1, newRule.getLeft(), randomSymbol2, 1.0);
             newRules.add(newRule);
         }
 

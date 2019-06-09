@@ -22,25 +22,20 @@ public class CoveringService {
         this.coveringOperator = initOperator();
     }
 
-    public static CoveringService getInstance() {
-        if (instance == null) {
-            instance = new CoveringService();
-        }
-        return instance;
-    }
-
-    public List<Rule> run(Grammar grammar, Symbol rightSymbol1, Symbol rightSymbol2) {
-        List<Rule> rules = coveringOperator.generateRule(grammar, rightSymbol1, rightSymbol2);
+    public List<Rule> run(Grammar grammar, Symbol rightSymbol1, Symbol rightSymbol2, boolean isLastCell, boolean hasStartSymbol) {
+        List<Rule> rules = coveringOperator.generateRule(grammar, rightSymbol1, rightSymbol2, isLastCell, hasStartSymbol);
         return rules;
     }
 
 
     private CoveringOperator initOperator() {
         switch (operatorType) {
-            case STANDARD:
-                return new StandardOperator();
+            case AGGRESSIVE:
+                return new AggressiveOperator();
             case NAKAMURA:
                 return new NakamuraOperator();
+            case PROGRESSIVE:
+                return new ProgressiveOperator();
             default:
                 throw new ApplicationException("Covering operator unknown");
         }

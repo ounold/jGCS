@@ -24,7 +24,6 @@ public class GrammarCorrectionService {
     public void correctGrammar(Grammar grammar) {
         removeImproductiveRulesAndSymbols(grammar);
         removeUnreachableRulesAndSymbols(grammar);
-        normalizeRules(grammar);
     }
 
     public void normalizeRules(Grammar grammar) {
@@ -117,10 +116,6 @@ public class GrammarCorrectionService {
     }
 
     public void removeZeroProbabilitiesRules(Grammar grammar) { //todo: write some tests
-        for (Rule rule : grammar.getNonTerminalRules()) {
-            if (rule.getProbability() == 0) {
-                grammar.removeRule(rule);
-            }
-        }
+        grammar.getNonTerminalRules().removeIf(rule -> rule.getProbability() == 0);
     }
 }

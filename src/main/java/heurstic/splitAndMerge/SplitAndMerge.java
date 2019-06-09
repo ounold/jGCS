@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class SplitAndMerge implements Heuristic {
@@ -47,22 +48,22 @@ public class SplitAndMerge implements Heuristic {
                 public void accept(Rule rule) {
                     if (rule.getLeft().equals(splitSymbol)) {
                         grammar.removeRule(rule);
-                        Rule newRule1 = new Rule(newSymbol1, rule.getRight1(), rule.getRight2(), 0.0);
-                        Rule newRule2 = new Rule(newSymbol2, rule.getRight1(), rule.getRight2(), 0.0);
-                        grammar.addNonTerminalRule(newRule1);
-                        grammar.addNonTerminalRule(newRule2);
+                        Rule newRule1 = new Rule(newSymbol1, rule.getRight1(), rule.getRight2(), 1.0);
+                        Rule newRule2 = new Rule(newSymbol2, rule.getRight1(), rule.getRight2(), 1.0);
+                        grammar.addRule(newRule1);
+                        grammar.addRule(newRule2);
                     } else if (rule.getRight1().equals(splitSymbol)) {
                         grammar.removeRule(rule);
-                        Rule newRule1 = new Rule(rule.getLeft(), newSymbol1, rule.getRight2(), 0.0);
-                        Rule newRule2 = new Rule(rule.getLeft(), newSymbol2, rule.getRight2(), 0.0);
-                        grammar.addNonTerminalRule(newRule1);
-                        grammar.addNonTerminalRule(newRule2);
+                        Rule newRule1 = new Rule(rule.getLeft(), newSymbol1, rule.getRight2(), 1.0);
+                        Rule newRule2 = new Rule(rule.getLeft(), newSymbol2, rule.getRight2(), 1.0);
+                        grammar.addRule(newRule1);
+                        grammar.addRule(newRule2);
                     } else if (rule.getRight2() != null && rule.getRight2().equals(splitSymbol)) {
                         grammar.removeRule(rule);
-                        Rule newRule1 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol1, 0.0);
-                        Rule newRule2 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol2, 0.0);
-                        grammar.addNonTerminalRule(newRule1);
-                        grammar.addNonTerminalRule(newRule2);
+                        Rule newRule1 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol1, 1.0);
+                        Rule newRule2 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol2, 1.0);
+                        grammar.addRule(newRule1);
+                        grammar.addRule(newRule2);
                     }
                 }
             });
@@ -86,6 +87,8 @@ public class SplitAndMerge implements Heuristic {
                 switchRight2(rule, replaced, replacement);
             }
         });
+        grammar.setNonTerminalRules(grammar.getNonTerminalRules().stream().distinct().collect(Collectors.toList()));
+        grammar.setTerminalRules(grammar.getTerminalRules().stream().distinct().collect(Collectors.toList()));
     }
 
     private void switchLeft(Rule rule, Symbol replaced, Symbol replacement) {
@@ -119,8 +122,8 @@ public class SplitAndMerge implements Heuristic {
     }
 
     private List<Symbol> getTwoRandomSymbols(Set<Symbol> allSymbols) {
-        int randomInt1 = getRandomWithoutDuplicate(null,allSymbols.size() - 1);
-        int randomInt2 = getRandomWithoutDuplicate(randomInt1, allSymbols.size() - 1);
+        int randomInt1 = getRandomWithoutDuplicate(null,allSymbols.size());
+        int randomInt2 = getRandomWithoutDuplicate(randomInt1, allSymbols.size());
         int loopCounter = 0;
         int foundCounter = 0;
         List<Symbol> resultPair = new ArrayList<>();
