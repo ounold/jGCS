@@ -68,6 +68,11 @@ public class Grammar {
         }
     }
 
+
+    public void addNonTerminalRules(List<Rule> rules) {
+        nonTerminalRules.addAll(rules);
+    }
+
     public void addNonTerminalRule(Rule rule) {
         nonTerminalRules.add(rule);
     }

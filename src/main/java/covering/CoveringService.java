@@ -12,8 +12,6 @@ public class CoveringService {
 
     private static final String COVERING_OPERATOR = "covering.operator";
 
-    private static CoveringService instance;
-
     private final CoveringOperator coveringOperator;
     private final CoveringOperatorType operatorType;
 
@@ -23,8 +21,7 @@ public class CoveringService {
     }
 
     public List<Rule> run(Grammar grammar, Symbol rightSymbol1, Symbol rightSymbol2, boolean isLastCell, boolean hasStartSymbol) {
-        List<Rule> rules = coveringOperator.generateRule(grammar, rightSymbol1, rightSymbol2, isLastCell, hasStartSymbol);
-        return rules;
+        return coveringOperator.generateRule(grammar, rightSymbol1, rightSymbol2, isLastCell, hasStartSymbol);
     }
 
 

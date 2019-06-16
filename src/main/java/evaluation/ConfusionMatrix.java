@@ -46,18 +46,15 @@ public class ConfusionMatrix {
     }
 
     public void update(boolean expected, boolean actual) {
-        if (expected && actual) {
-            truePositives++;
-        }
-        if (expected && !actual) {
+        if (actual)
+            if (expected)
+                truePositives++;
+            else
+                falsePositives++;
+        else if (expected)
             falseNegatives++;
-        }
-        if (!expected && actual) {
-            falsePositives++;
-        }
-        if (!expected && !actual) {
+        else
             trueNegatives++;
-        }
     }
 
 }

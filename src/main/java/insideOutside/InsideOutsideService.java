@@ -110,7 +110,7 @@ public class InsideOutsideService {
     public void updateCounts(Grammar grammar, double sentenceProbability, IoSequence sequence) {
         grammar.getRules().forEach(rule -> {
             LOGGER.debug("Calculating counts of {} with sentenceProbability {}", rule.getDefinition(), sentenceProbability);
-            if (sentenceProbability > Math.pow(10, -10)) {
+            if (sentenceProbability > 0.0000000000001) {
                 double relativeProbability = rule.getProbability() / sentenceProbability;
                 double newCount = relativeProbability * rule.getSumInsideOutsideUsages();
                 rule.addCount(newCount);

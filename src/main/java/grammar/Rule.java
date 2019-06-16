@@ -41,6 +41,12 @@ public class Rule {
 
     private int countInsideOutsideUsageProbability;
 
+    private int countUsageInValidSentencesParsing;
+
+    private int countUsageInNotValidSentencesParsing;
+
+    private double fitness;
+
     public Rule(Symbol left, Symbol right1, Symbol right2, double probability) {
         this.left = left;
         this.right1 = right1;
@@ -91,6 +97,14 @@ public class Rule {
 
     public void addCountInPositives(double countInPositives) {
         this.countInPositives += countInPositives;
+    }
+
+    public void incrementUsageInValidSentencesParsing() {
+        this.countUsageInValidSentencesParsing++;
+    }
+
+    public void incrementUsageInNotValidSentencesParsing() {
+        this.countUsageInNotValidSentencesParsing++;
     }
 
     @Override

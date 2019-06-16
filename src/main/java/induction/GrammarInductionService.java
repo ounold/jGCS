@@ -1,7 +1,6 @@
 package induction;
 
 import application.Application;
-import configuration.ConfigurationService;
 import correction.GrammarCorrectionService;
 import cyk.CykResult;
 import cyk.CykService;
@@ -10,6 +9,7 @@ import evaluation.EvaluationService;
 import executionTime.EtMarkers;
 import executionTime.EtMarkersChain;
 import executionTime.ExecutionTimeService;
+import fitness.FitnessService;
 import grammar.Grammar;
 import heurstic.HeuristicService;
 import insideOutside.InsideOutsideService;
@@ -44,7 +44,7 @@ public class GrammarInductionService {
     private ExecutionTimeService executionTimeService = ExecutionTimeService.getInstance();
     private StopConditionService stopConditionService = StopConditionService.getInstance();
     private HeuristicService heuristicService = HeuristicService.getInstance();
-    private ConfigurationService configurationService = ConfigurationService.getInstance();
+    private FitnessService fitnessService = FitnessService.getInstance();
 
     private static GrammarInductionService instance;
 
@@ -57,7 +57,7 @@ public class GrammarInductionService {
         return instance;
     }
 
-    public void run(Grammar grammar, Dataset dataset, Dataset testDataset, int iterations, boolean enableCovering) {
+    public void run(Grammar grammar, Dataset dataset, Dataset testDataset, int trainIterations, boolean enableCovering) {
         IoDataset ioDataset = neighbourhoodService.buildNeighbourhoods(dataset);
 
         int iteration = 0;
@@ -66,11 +66,13 @@ public class GrammarInductionService {
             System.out.println("IITERACJA: " + iteration);
             final int iter = iteration;
             executionTimeService.saveExecutionTime(ETM_HEURISTIC, () -> heuristicService.run(grammar, iter));
-            ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
-                executionTimeService.saveExecutionTime(ETMC_CYK,
-                        () -> cykService.runCyk(ioSequence.getSequence(), grammar, enableCovering && ioSequence.getSequence().isPositive()));
-            }));
-            for (int i = 0; i < iterations; i++) {
+            if (enableCovering) {
+                ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
+                    executionTimeService.saveExecutionTime(ETMC_CYK,
+                            () -> cykService.runCyk(ioSequence.getSequence(), grammar, ioSequence.getSequence().isPositive()));
+                }));
+            }
+            for (int i = 0; i < trainIterations; i++) {
                 final int trainIter = i;
                 executionTimeService.saveExecutionTime(ETMC_ITERATION, () -> {
                     uiService.state("Iteration: %d", trainIter + 1);
@@ -78,12 +80,15 @@ public class GrammarInductionService {
                     ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
                         insideOutsideService.resetInsideOutsideValues(grammar);
                         CykResult cykResult = executionTimeService.saveExecutionTime(ETMC_CYK, () -> cykService.runCyk(ioSequence.getSequence(), grammar, false));
+                        fitnessService.countRulesUsage(ioSequence.getSequence(), cykResult, grammar);
                         executionTimeService.saveExecutionTime(ETMC_IO_COUNTS, () -> insideOutsideService.updateRulesCounts(grammar, cykResult, ioSequence));
                     }));
                     executionTimeService.saveExecutionTime(ETMC_IO_PROBABILITIES, () -> insideOutsideService.updateRulesProbabilities(grammar));
                 });
             }
             executionTimeService.saveExecutionTime(ETMC_REMOVING_RULES, () -> correctionService.removeZeroProbabilitiesRules(grammar));
+            fitnessService.countRulesFitness(grammar);
+            System.out.println("Grammar size: " + grammar.getRules().size());
             evaluationService.saveEvaluation(iter, () -> executionTimeService.saveExecutionTime(ETMC_EVALUATION,
                     () -> evaluationService.evaluateDataset(testDataset, grammar)));
         }

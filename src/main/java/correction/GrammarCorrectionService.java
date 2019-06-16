@@ -116,6 +116,6 @@ public class GrammarCorrectionService {
     }
 
     public void removeZeroProbabilitiesRules(Grammar grammar) { //todo: write some tests
-        grammar.getNonTerminalRules().removeIf(rule -> rule.getProbability() == 0);
+        grammar.getNonTerminalRules().removeIf(rule -> rule.getProbability() <= 0.0000000000001);
     }
 }

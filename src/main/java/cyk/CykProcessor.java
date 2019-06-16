@@ -126,7 +126,7 @@ public abstract class CykProcessor {
                     List<Rule> coveringRules = coveringService.run(grammar, rightSymbol1, rightSymbol2, islastCell, hasStartSymbol);
 
                     for (Rule coveringRule : coveringRules) {
-                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, parentOneI, parentOneJ, parentTwoI, parentTwoJ, coveringRule); //todo: handle result of Nakamura's operator
+                        ProbabilityCell probabilityCell = fillProbabilityCell(i, j, parentOneI, parentOneJ, parentTwoI, parentTwoJ, coveringRule);
                         rulesTable.get(i, j).getCellRules().add(createCellRule(i, j, k, coveringRule, probabilityCell));
                         grammar.addNonTerminalRule(coveringRule);
                     }
@@ -158,7 +158,11 @@ public abstract class CykProcessor {
     protected abstract CellRule createCellRule(Rule rule, ProbabilityCell probabilityCell, int i);
 
     private double calculateProbability(ProbabilityCell parent1, ProbabilityCell parent2, Rule rule) {
-        return rule.getProbability() * parent1.getProbability() * parent2.getProbability();
+        double result = rule.getProbability() * parent1.getProbability() * parent2.getProbability();
+        if (result == 0.0 && rule.getProbability() > 0 && parent1.getProbability() >  0 && parent2.getProbability() > 0) {
+            result = Math.pow(10, -13); // workaround for very small probabilities that exceed range of double
+        }
+        return result;
     }
 
     CykResult runCyk(Sequence testSentence, Grammar grammar) {
