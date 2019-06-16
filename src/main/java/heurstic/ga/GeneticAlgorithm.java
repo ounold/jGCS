@@ -27,7 +27,7 @@ public class GeneticAlgorithm implements Heuristic {
         if (random.nextDouble() <= configuration.getDouble(RUN_PROBABILITY)) {//probability of getting value less or equal to n equals n
             for (int i = 1; i < getNumberOfNewRules(); i++) {
                 List<Rule> rules = select(grammar);
-                List<Rule> newRules = crossover(rules.get(0), rules.get(1));
+                List<Rule> newRules = crossing(rules.get(0), rules.get(1));
                 mutate(newRules, grammar);
                 invert(newRules);
                 grammar.addNonTerminalRules(newRules);
@@ -107,7 +107,8 @@ public class GeneticAlgorithm implements Heuristic {
         return symbols.get(index);
     }
 
-    private List<Rule> crossover(Rule rule1, Rule rule2) {
+    private List<Rule> crossing
+            (Rule rule1, Rule rule2) {
         int switchedSymbolIndex = random.nextInt(2) + 1;
 
         Rule newRule1 = null;

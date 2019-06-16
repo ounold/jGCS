@@ -1,5 +1,7 @@
 package fitness;
 
+import configuration.Configuration;
+import configuration.ConfigurationService;
 import cyk.CykResult;
 import dataset.Sequence;
 import executionTime.ExecutionTimeService;
@@ -8,7 +10,11 @@ import rulesTable.RulesTable;
 
 public class FitnessService {
 
+    private static final String POSITIVE_WEIGHT = "fitness.positiveWeight";
+    private static final String NEGATIVE_WEIGHT = "fitness.negativeWeight";
+
     private ExecutionTimeService executionTimeService = ExecutionTimeService.getInstance();
+    private Configuration configuration = ConfigurationService.getConfiguration();
 
     private static FitnessService instance;
 
@@ -24,8 +30,11 @@ public class FitnessService {
     public void countRulesFitness(Grammar grammar) {
         grammar.getNonTerminalRules().forEach(rule -> {
             double fitness = 0.0;
-            if (((double) rule.getCountUsageInValidSentencesParsing() +  (double) rule.getCountUsageInNotValidSentencesParsing()) > 0) {
-                fitness = rule.getCountUsageInValidSentencesParsing() / ((double) rule.getCountUsageInValidSentencesParsing() + (double) rule.getCountUsageInNotValidSentencesParsing());
+            double positiveWeight = configuration.getDouble(POSITIVE_WEIGHT);
+            double negativeWeight = configuration.getDouble(NEGATIVE_WEIGHT);
+            if (((double) rule.getCountUsageInValidSentencesParsing() +  (double) rule.getCountUsageInNotValidSentencesParsing()) > 0) { //todo: refactor
+                fitness = (rule.getCountUsageInValidSentencesParsing() * positiveWeight)
+                        / ((double) rule.getCountUsageInValidSentencesParsing() * positiveWeight + (double) rule.getCountUsageInNotValidSentencesParsing() * negativeWeight);
             }
             rule.setFitness(fitness);
         });
