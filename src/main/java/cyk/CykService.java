@@ -2,12 +2,14 @@ package cyk;
 
 import configuration.Configuration;
 import configuration.ConfigurationService;
+import covering.CoveringOperatorType;
 import dataset.Sequence;
 import grammar.Grammar;
 
 public class CykService {
 
     private static final String CALCULATE_INSIDES = "ce.calculateInsidesInCyk";
+    private static final String COVERING_OPERATOR = "covering.operator";
 
     private Configuration configuration = ConfigurationService.getConfiguration();
 
@@ -26,7 +28,10 @@ public class CykService {
         CykProcessor cykProcessor = getCyk(enableCovering);
         CykResult result = cykProcessor.runCyk(testSentence, grammar);
 
-        if (enableCovering && !result.isParsed()) {
+        if (enableCovering
+                && configuration.getString(COVERING_OPERATOR).equals(CoveringOperatorType.PROGRESSIVE.name())
+                && !result.isParsed()
+                && result.getSentenceProbability() <= 0) {
             return runCyk(testSentence, grammar, true);
         }
         return result;
