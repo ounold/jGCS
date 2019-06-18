@@ -2,14 +2,12 @@ package application;
 
 import configuration.Configuration;
 import configuration.ConfigurationService;
-import covering.CoveringService;
 import dataset.Dataset;
 import evaluation.EvaluationService;
 import executionTime.EtMarkers;
 import executionTime.EtMarkersChain;
 import executionTime.ExecutionTimeService;
 import grammar.Grammar;
-import heurstic.HeuristicService;
 import induction.GrammarInductionService;
 import induction.InductionMode;
 import io.abbadingo.AbbadingoReaderService;
@@ -101,7 +99,7 @@ public class Application {
                                     uiService.info("----------Starting execution: %d/%d----------", currentExecution, params.getRepeats());
                                     Grammar grammar = loadGrammar(grammarPath, dataset);
                                     runInduction(iterations, mode, dataset, testDataset, grammar);
-                                    saveEvaluation(evaluationOutput, datasetPath, currentExecution);
+                                    saveEvaluation(evaluationOutput, datasetPath, currentExecution, grammar);
                                     updateBestResult(bestResultWrapper);
                                     evaluationService.clearEvaluation();
                                 });
@@ -138,9 +136,9 @@ public class Application {
         }
     }
 
-    private void saveEvaluation(String evaluationOutput, Path datasetPath, int execution) {
+    private void saveEvaluation(String evaluationOutput, Path datasetPath, int execution, Grammar grammar) {
         uiService.info("Saving evaluation to file: %s", evaluationOutput);
-        evaluationService.appendEvaluationToCSV(datasetPath.getFileName().toString(), execution, evaluationOutput);
+        evaluationService.appendEvaluationToCSV(datasetPath.getFileName().toString(), execution, evaluationOutput, grammar);
     }
 
     private void runInduction(Integer iterations, InductionMode mode, Dataset dataset, Dataset testDataset, Grammar grammar) {

@@ -63,8 +63,8 @@ public class GrammarInductionService {
         int iteration = 0;
         while (!stopConditionService.shouldStop()) {
             iteration++;
-            System.out.println("IITERACJA: " + iteration);
             final int iter = iteration;
+            uiService.info("\nIteration: %d", iteration);
             executionTimeService.saveExecutionTime(ETM_HEURISTIC, () -> heuristicService.run(grammar, iter));
             if (enableCovering) {
                 ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
@@ -75,7 +75,7 @@ public class GrammarInductionService {
             for (int i = 0; i < trainIterations; i++) {
                 final int trainIter = i;
                 executionTimeService.saveExecutionTime(ETMC_ITERATION, () -> {
-                    uiService.state("Iteration: %d", trainIter + 1);
+                    uiService.state("Train iteration: %d", trainIter + 1);
                     insideOutsideService.resetInsideOutsideValuesAndCounts(grammar);
                     ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
                         insideOutsideService.resetInsideOutsideValues(grammar);
@@ -83,12 +83,12 @@ public class GrammarInductionService {
                         fitnessService.countRulesUsage(ioSequence.getSequence(), cykResult, grammar);
                         executionTimeService.saveExecutionTime(ETMC_IO_COUNTS, () -> insideOutsideService.updateRulesCounts(grammar, cykResult, ioSequence));
                     }));
+                    correctionService.removeDuplicatedRules(grammar);
                     executionTimeService.saveExecutionTime(ETMC_IO_PROBABILITIES, () -> insideOutsideService.updateRulesProbabilities(grammar));
                 });
             }
             executionTimeService.saveExecutionTime(ETMC_REMOVING_RULES, () -> correctionService.removeZeroProbabilitiesRules(grammar));
             fitnessService.countRulesFitness(grammar);
-            System.out.println("Grammar size: " + grammar.getRules().size());
             evaluationService.saveEvaluation(iter, () -> executionTimeService.saveExecutionTime(ETMC_EVALUATION,
                     () -> evaluationService.evaluateDataset(testDataset, grammar)));
         }

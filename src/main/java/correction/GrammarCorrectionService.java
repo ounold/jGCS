@@ -118,4 +118,9 @@ public class GrammarCorrectionService {
     public void removeZeroProbabilitiesRules(Grammar grammar) { //todo: write some tests
         grammar.getNonTerminalRules().removeIf(rule -> rule.getProbability() <= 0);
     }
+
+    public void removeDuplicatedRules(Grammar grammar) {
+        List<Rule> distinctRules = grammar.getNonTerminalRules().stream().distinct().collect(Collectors.toList());
+        grammar.setNonTerminalRules(distinctRules);
+    }
 }

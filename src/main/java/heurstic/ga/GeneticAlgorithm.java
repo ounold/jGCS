@@ -27,17 +27,19 @@ public class GeneticAlgorithm implements Heuristic {
         if (random.nextDouble() <= configuration.getDouble(RUN_PROBABILITY)) {//probability of getting value less or equal to n equals n
             for (int i = 1; i < getNumberOfNewRules(); i++) {
                 List<Rule> rules = select(grammar);
-                List<Rule> newRules = crossing(rules.get(0), rules.get(1));
-                mutate(newRules, grammar);
-                invert(newRules);
-                grammar.addNonTerminalRules(newRules);
+                if (rules.size() == 2) {
+                    List<Rule> newRules = crossover(rules.get(0), rules.get(1));
+                    mutate(newRules, grammar);
+                    invert(newRules);
+                    grammar.addNonTerminalRules(newRules);
+                }
             }
         }
     }
 
     private List<Rule> select(Grammar grammar) {
-        Set selectedRules = new HashSet<Rule>();
-        Set selectedRulesIndexes = new HashSet<Integer>();
+        Set<Rule> selectedRules = new HashSet<>();
+        Set<Integer> selectedRulesIndexes = new HashSet<>();
         int populationSize = getPopulationSize(grammar);
 
         while (selectedRules.size() != populationSize) {
@@ -47,13 +49,8 @@ public class GeneticAlgorithm implements Heuristic {
             selectedRules.add(rule);
         }
 
-        return (List<Rule>) selectedRules.stream()
-                .sorted((o1, o2) -> {
-                    Rule rule1 = (Rule) o1;
-                    Rule rule2 = (Rule) o2;
-
-                    return (-1) * Double.compare(rule1.getFitness(), rule2.getFitness());
-                })
+        return selectedRules.stream()
+                .sorted(Comparator.comparingDouble(Rule::getFitness).reversed())
                 .limit(2)
                 .collect(Collectors.toList());
     }
@@ -107,8 +104,7 @@ public class GeneticAlgorithm implements Heuristic {
         return symbols.get(index);
     }
 
-    private List<Rule> crossing
-            (Rule rule1, Rule rule2) {
+    private List<Rule> crossover (Rule rule1, Rule rule2) {
         int switchedSymbolIndex = random.nextInt(2) + 1;
 
         Rule newRule1 = null;

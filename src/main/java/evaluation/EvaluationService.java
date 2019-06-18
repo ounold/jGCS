@@ -68,11 +68,11 @@ public class EvaluationService {
     public void writeEvaluationHeaderToCSV(String evaluationOutput) {
         fileService.appendToCSV(
                 evaluationOutput,
-                Collections.singletonList(Arrays.asList("Configuration", "Dataset", "Execution", "Iteration", "TP", "FP", "TN", "FN", "Sensitivity", "Precision", "Specificity", "F1"))
+                Collections.singletonList(Arrays.asList("Configuration", "Dataset", "Execution", "Iteration", "TP", "FP", "TN", "FN", "Sensitivity", "Precision", "Specificity", "F1", "Grammar size"))
         );
     }
 
-    public void appendEvaluationToCSV(String dataset, int execution, String evaluationOutput) {
+    public void appendEvaluationToCSV(String dataset, int execution, String evaluationOutput, Grammar grammar) {
         fileService.appendToCSV(
                 evaluationOutput,
                 evaluationRepository.getResult().entrySet().stream()
@@ -92,6 +92,7 @@ public class EvaluationService {
                             result.add(value.getPrecision());
                             result.add(value.getSpecificity());
                             result.add(value.getF1());
+                            result.add(grammar.getRules().size());
                             return result;
                         }).collect(Collectors.toList())
         );

@@ -26,6 +26,7 @@ public abstract class CykProcessor {
 
     private static final String NUM_OF_THREADS = "cyk.numOfThreads";
     private static final String PARSING_THRESHOLD = "cyk.parsingThreshold";
+    private static final String PROBABILITY_BASED_EVALUATION = "cyk.probabilityBasedParsingEvaluation";
 
     private ConcurrentLinkedQueue<TableCell> jobs = new ConcurrentLinkedQueue<>();
 
@@ -198,7 +199,16 @@ public abstract class CykProcessor {
     }
 
     private boolean isParsed(double sentenceProbability) {
-        return sentenceProbability > parsingThreshold;
+        if (configuration.getBoolean(PROBABILITY_BASED_EVALUATION)) {
+            return sentenceProbability > parsingThreshold;
+        } else {
+            for (CellRule cellRule : rulesTable.getStartTableCell().getCellRules()) {
+                if (cellRule.getRule().getLeft().getSymbolType().equals(SymbolType.START)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private double calculateSentenceProbability() {
