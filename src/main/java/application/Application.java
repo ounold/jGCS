@@ -99,7 +99,7 @@ public class Application {
                                     uiService.info("----------Starting execution: %d/%d----------", currentExecution, params.getRepeats());
                                     Grammar grammar = loadGrammar(grammarPath, dataset);
                                     runInduction(iterations, mode, dataset, testDataset, grammar);
-                                    saveEvaluation(evaluationOutput, datasetPath, currentExecution, grammar);
+                                    saveEvaluation(evaluationOutput, datasetPath, currentExecution);
                                     updateBestResult(bestResultWrapper);
                                     evaluationService.clearEvaluation();
                                 });
@@ -136,9 +136,9 @@ public class Application {
         }
     }
 
-    private void saveEvaluation(String evaluationOutput, Path datasetPath, int execution, Grammar grammar) {
+    private void saveEvaluation(String evaluationOutput, Path datasetPath, int execution) {
         uiService.info("Saving evaluation to file: %s", evaluationOutput);
-        evaluationService.appendEvaluationToCSV(datasetPath.getFileName().toString(), execution, evaluationOutput, grammar);
+        evaluationService.appendEvaluationToCSV(datasetPath.getFileName().toString(), execution, evaluationOutput);
     }
 
     private void runInduction(Integer iterations, InductionMode mode, Dataset dataset, Dataset testDataset, Grammar grammar) {

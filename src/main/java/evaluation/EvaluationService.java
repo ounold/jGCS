@@ -48,7 +48,7 @@ public class EvaluationService {
             CykResult cykResult = cykService.runCyk(sequence, grammar, false);
             confusionMatrix.update(sequence.isPositive(), cykResult.isParsed());
         });
-        return new Evaluation(grammarIoService.writeGrammar(grammar), confusionMatrix);
+        return new Evaluation(grammarIoService.writeGrammar(grammar), grammar.getRules().size(), confusionMatrix);
     }
 
     public void saveEvaluationConditionally(Integer iteration, Supplier<Evaluation> evaluationSupplier) {
@@ -72,7 +72,7 @@ public class EvaluationService {
         );
     }
 
-    public void appendEvaluationToCSV(String dataset, int execution, String evaluationOutput, Grammar grammar) {
+    public void appendEvaluationToCSV(String dataset, int execution, String evaluationOutput) {
         fileService.appendToCSV(
                 evaluationOutput,
                 evaluationRepository.getResult().entrySet().stream()
@@ -92,7 +92,7 @@ public class EvaluationService {
                             result.add(value.getPrecision());
                             result.add(value.getSpecificity());
                             result.add(value.getF1());
-                            result.add(grammar.getRules().size());
+                            result.add(e.getValue().getGrammarSize());
                             return result;
                         }).collect(Collectors.toList())
         );

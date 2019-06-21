@@ -18,6 +18,7 @@ public class GeneticAlgorithm implements Heuristic {
     private static final String POPULATION_SIZE = "heuristic.ga.populationSize";
     private static final String SYMBOL_MUTATION_PROBABILITY = "heuristic.ga.symbolMutationProbability";
     private static final String INVERSION_PROBABILITY = "heuristic.ga.inversionProbability";
+    private static final String CROSSOVER_PROBABILITY = "heuristic.ga.crossoverProbability";
 
     private Random random = new Random();
     private Configuration configuration = ConfigurationService.getConfiguration();
@@ -105,25 +106,27 @@ public class GeneticAlgorithm implements Heuristic {
     }
 
     private List<Rule> crossover (Rule rule1, Rule rule2) {
-        int switchedSymbolIndex = random.nextInt(2) + 1;
+        if (random.nextDouble() <= configuration.getDouble(CROSSOVER_PROBABILITY)) {
+            int switchedSymbolIndex = random.nextInt(2) + 1;
 
-        Rule newRule1 = null;
-        Rule newRule2 = null;
+            Rule newRule1 = null;
+            Rule newRule2 = null;
 
-        if (switchedSymbolIndex == 1) {
-            Symbol right11 = rule1.getRight1();
-            Symbol right12 = rule2.getRight1();
-            newRule1 = new Rule(rule1.getLeft(), right12, rule1.getRight2(), 1.0);
-            newRule2 = new Rule(rule2.getLeft(), right11, rule2.getRight2(), 1.0);
+            if (switchedSymbolIndex == 1) {
+                Symbol right11 = rule1.getRight1();
+                Symbol right12 = rule2.getRight1();
+                newRule1 = new Rule(rule1.getLeft(), right12, rule1.getRight2(), 1.0);
+                newRule2 = new Rule(rule2.getLeft(), right11, rule2.getRight2(), 1.0);
+            }
+            if (switchedSymbolIndex == 2) {
+                Symbol right21 = rule1.getRight2();
+                Symbol right22 = rule2.getRight2();
+                newRule1 = new Rule(rule1.getLeft(), rule1.getRight1(), right22, 1.0);
+                newRule2 = new Rule(rule2.getLeft(), rule2.getRight2(), right21, 1.0);
+            }
+            return Arrays.asList(newRule1, newRule2);
         }
-        if (switchedSymbolIndex == 2) {
-            Symbol right21 = rule1.getRight2();
-            Symbol right22 = rule2.getRight2();
-            newRule1 = new Rule(rule1.getLeft(), rule1.getRight1(), right22, 1.0);
-            newRule2 = new Rule(rule2.getLeft(), rule2.getRight2(), right21, 1.0);
-        }
-
-        return Arrays.asList(newRule1, newRule2);
+        return Arrays.asList(rule1, rule2);
     }
 
     private int getRandomWithoutDuplicates(Set notToDuplicate, int bound) {

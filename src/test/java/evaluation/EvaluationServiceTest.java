@@ -79,6 +79,7 @@ class EvaluationServiceTest extends AbstractServiceTest {
         ConfigurationService.getInstance().overrideProperty(MAXIMIZATION_TARGET, "F1");
         Evaluation bestTillNow = new Evaluation(
                 "",
+                1,
                 new ConfusionMatrix(9, 1, 1, 1)
         );
 
@@ -95,6 +96,7 @@ class EvaluationServiceTest extends AbstractServiceTest {
         ConfigurationService.getInstance().overrideProperty(MAXIMIZATION_TARGET, "F1");
         Evaluation bestTillNow = new Evaluation(
                 "",
+                1,
                 new ConfusionMatrix(1, 1, 1, 1)
         );
 
@@ -116,6 +118,7 @@ class EvaluationServiceTest extends AbstractServiceTest {
     private Supplier<Evaluation> createEvaluationSupplier(int tp, int fp, int tn, int fn) {
         return () -> new Evaluation(
                 "",
+                1,
                 new ConfusionMatrix(tp, fp, tn, fn)
         );
     }

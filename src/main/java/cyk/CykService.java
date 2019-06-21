@@ -31,7 +31,7 @@ public class CykService {
         if (enableCovering
                 && configuration.getString(COVERING_OPERATOR).equals(CoveringOperatorType.PROGRESSIVE.name())
                 && !result.isParsed()
-                && result.getSentenceProbability() <= 0) {
+                && result.getSentenceProbability() < 0) {
             return runCyk(testSentence, grammar, true);
         }
         return result;

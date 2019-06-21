@@ -62,7 +62,7 @@ public class InsideOutsideService {
 //                    LOGGER.info("Rule: {}", rule.toFullString());
                     double sumOfAllPositiveCountsWithLeftSymbol = sumAllPositiveCountsWithLeftSymbol(grammar, rule);
                     double newProbability = calculateNewProbability(rule, sumOfAllPositiveCountsWithLeftSymbol, mode);
-                    if (newProbability != 1e-4) {
+                    if (newProbability > 1e-5) {
                         rule.setProbability(newProbability);
                     } else {
                         rule.setProbability(0);
