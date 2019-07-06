@@ -57,7 +57,7 @@ public class GrammarInductionService {
         return instance;
     }
 
-    public void run(Grammar grammar, Dataset dataset, Dataset testDataset, int trainIterations, boolean enableCovering) {
+    public void run(Grammar grammar, Dataset dataset, Dataset testDataset, int ioIterations, boolean enableCovering) {
         IoDataset ioDataset = neighbourhoodService.buildNeighbourhoods(dataset);
 
         int iteration = 0;
@@ -72,10 +72,11 @@ public class GrammarInductionService {
                             () -> cykService.runCyk(ioSequence.getSequence(), grammar, ioSequence.getSequence().isPositive()));
                 }));
             }
-            for (int i = 0; i < trainIterations; i++) {
+            correctionService.removeDuplicatedRules(grammar);
+            for (int i = 0; i < ioIterations; i++) {
                 final int trainIter = i;
                 executionTimeService.saveExecutionTime(ETMC_ITERATION, () -> {
-                    uiService.state("Train iteration: %d", trainIter + 1);
+                    uiService.state("IO iteration: %d", trainIter + 1);
                     insideOutsideService.resetInsideOutsideValuesAndCounts(grammar);
                     ioDataset.getSequences().forEach(ioSequence -> executionTimeService.saveExecutionTime(ETMC_SEQUENCE, () -> {
                         insideOutsideService.resetInsideOutsideValues(grammar);
@@ -83,7 +84,6 @@ public class GrammarInductionService {
                         fitnessService.countRulesUsage(ioSequence.getSequence(), cykResult, grammar);
                         executionTimeService.saveExecutionTime(ETMC_IO_COUNTS, () -> insideOutsideService.updateRulesCounts(grammar, cykResult, ioSequence));
                     }));
-                    correctionService.removeDuplicatedRules(grammar);
                     executionTimeService.saveExecutionTime(ETMC_IO_PROBABILITIES, () -> insideOutsideService.updateRulesProbabilities(grammar));
                 });
             }
