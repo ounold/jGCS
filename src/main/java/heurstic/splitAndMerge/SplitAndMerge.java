@@ -52,13 +52,27 @@ public class SplitAndMerge implements Heuristic {
                         Rule newRule2 = new Rule(newSymbol2, rule.getRight1(), rule.getRight2(), 1.0);
                         grammar.addRule(newRule1);
                         grammar.addRule(newRule2);
-                    } else if (rule.getRight1().equals(splitSymbol)) {
+                    }
+                }
+            });
+
+            grammar.getRules().stream().forEach(new Consumer<Rule>() {
+                @Override
+                public void accept(Rule rule) {
+                    if (rule.getRight1().equals(splitSymbol)) {
                         grammar.removeRule(rule);
                         Rule newRule1 = new Rule(rule.getLeft(), newSymbol1, rule.getRight2(), 1.0);
                         Rule newRule2 = new Rule(rule.getLeft(), newSymbol2, rule.getRight2(), 1.0);
                         grammar.addRule(newRule1);
                         grammar.addRule(newRule2);
-                    } else if (rule.getRight2() != null && rule.getRight2().equals(splitSymbol)) {
+                    }
+                }
+            });
+
+            grammar.getRules().stream().forEach(new Consumer<Rule>() {
+                @Override
+                public void accept(Rule rule) {
+                    if (rule.getRight2() != null && rule.getRight2().equals(splitSymbol)) {
                         grammar.removeRule(rule);
                         Rule newRule1 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol1, 1.0);
                         Rule newRule2 = new Rule(rule.getLeft(), rule.getRight1(), newSymbol2, 1.0);
