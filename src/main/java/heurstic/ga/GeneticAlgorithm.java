@@ -46,7 +46,7 @@ public class GeneticAlgorithm implements Heuristic {
         while (selectedRules.size() != populationSize) {
             int ruleIndex = getRandomWithoutDuplicates(selectedRulesIndexes, grammar.getNonTerminalRules().size());
             Rule parentRule =  grammar.getNonTerminalRules().get(ruleIndex);
-            Rule rule = new Rule(parentRule.getLeft(), parentRule.getRight1(), parentRule.getRight2(), 0.0);
+            Rule rule = new Rule(parentRule.getLeft(), parentRule.getRight1(), parentRule.getRight2(), parentRule.getProbability());
             selectedRulesIndexes.add(ruleIndex);
             selectedRules.add(rule);
         }

@@ -54,13 +54,6 @@ public class Rule {
         this.probability = probability;
     }
 
-    public Rule(Rule rule) {
-        this.left = rule.left;
-        this.right1 = rule.right1;
-        this.right2 = rule.right2;
-        this.probability = rule.probability;
-    }
-
     public boolean isStart() {
         return left.isStart();
     }
