@@ -109,19 +109,19 @@ public class HeuristicServiceTest extends AbstractServiceTest {
         Assertions.assertEquals(rules.get(0).getLeft(), B);
         Assertions.assertEquals(rules.get(0).getRight1(), new Symbol("b", 0, SymbolType.TERMINAL));
 
-        Assertions.assertEquals(rules.get(1).getLeft(), E);
-        Assertions.assertEquals(rules.get(1).getRight1(), B);
-        Assertions.assertEquals(rules.get(1).getRight2(), C);
+        Assertions.assertEquals(rules.get(1).getLeft(), G);
+        Assertions.assertEquals(rules.get(1).getRight1(), new Symbol("a", 0, SymbolType.TERMINAL));
 
-        Assertions.assertEquals(rules.get(2).getLeft(), F);
-        Assertions.assertEquals(rules.get(2).getRight1(), B);
-        Assertions.assertEquals(rules.get(2).getRight2(), D);
+        Assertions.assertEquals(rules.get(2).getLeft(), H);
+        Assertions.assertEquals(rules.get(2).getRight1(), new Symbol("a", 0, SymbolType.TERMINAL));
 
-        Assertions.assertEquals(rules.get(3).getLeft(), G);
-        Assertions.assertEquals(rules.get(3).getRight1(), new Symbol("a", 0, SymbolType.TERMINAL));
+        Assertions.assertEquals(rules.get(3).getLeft(), E);
+        Assertions.assertEquals(rules.get(3).getRight1(), B);
+        Assertions.assertEquals(rules.get(3).getRight2(), C);
 
-        Assertions.assertEquals(rules.get(4).getLeft(), H);
-        Assertions.assertEquals(rules.get(4).getRight1(), new Symbol("a", 0, SymbolType.TERMINAL));
+        Assertions.assertEquals(rules.get(4).getLeft(), F);
+        Assertions.assertEquals(rules.get(4).getRight1(), B);
+        Assertions.assertEquals(rules.get(4).getRight2(), D);
 
         Assertions.assertEquals(rules.get(5).getLeft(), C);
         Assertions.assertEquals(rules.get(5).getRight1(), G);
@@ -131,21 +131,21 @@ public class HeuristicServiceTest extends AbstractServiceTest {
         Assertions.assertEquals(rules.get(6).getRight1(), H);
         Assertions.assertEquals(rules.get(6).getRight2(), B);
 
-        Assertions.assertEquals(rules.get(7).getLeft(), D);
-        Assertions.assertEquals(rules.get(7).getRight1(), C);
-        Assertions.assertEquals(rules.get(7).getRight2(), G);
+        Assertions.assertEquals(rules.get(7).getLeft(), S);
+        Assertions.assertEquals(rules.get(7).getRight1(), G);
+        Assertions.assertEquals(rules.get(7).getRight2(), F);
 
-        Assertions.assertEquals(rules.get(8).getLeft(), D);
-        Assertions.assertEquals(rules.get(8).getRight1(), C);
-        Assertions.assertEquals(rules.get(8).getRight2(), H);
+        Assertions.assertEquals(rules.get(8).getLeft(), S);
+        Assertions.assertEquals(rules.get(8).getRight1(), H);
+        Assertions.assertEquals(rules.get(8).getRight2(), F);
 
-        Assertions.assertEquals(rules.get(9).getLeft(), S);
-        Assertions.assertEquals(rules.get(9).getRight1(), G);
-        Assertions.assertEquals(rules.get(9).getRight2(), F);
+        Assertions.assertEquals(rules.get(9).getLeft(), D);
+        Assertions.assertEquals(rules.get(9).getRight1(), C);
+        Assertions.assertEquals(rules.get(9).getRight2(), G);
 
-        Assertions.assertEquals(rules.get(10).getLeft(), S);
-        Assertions.assertEquals(rules.get(10).getRight1(), H);
-        Assertions.assertEquals(rules.get(10).getRight2(), F);
+        Assertions.assertEquals(rules.get(10).getLeft(), D);
+        Assertions.assertEquals(rules.get(10).getRight1(), C);
+        Assertions.assertEquals(rules.get(10).getRight2(), H);
     }
 
 }

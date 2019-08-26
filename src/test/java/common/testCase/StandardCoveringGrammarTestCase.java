@@ -8,7 +8,6 @@ import rulesTable.RulesTable;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,7 +28,6 @@ public class StandardCoveringGrammarTestCase extends GrammarTestCase {
     @Override
     public void assertResult(CykResult cykResult) {
         assertRulesTable(cykResult.getRulesTable());
-        assertEquals(cykResult.getSentenceProbability(), 1, .1);
         assertTrue(cykResult.isParsed());
     }
 
