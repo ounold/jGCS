@@ -41,8 +41,6 @@ public class CoveringService {
         switch (operatorType) {
             case AGGRESSIVE:
                 return new AggressiveOperator();
-            case NAKAMURA:
-                return new NakamuraOperator();
             case PROGRESSIVE:
                 return new ProgressiveOperator();
             default:

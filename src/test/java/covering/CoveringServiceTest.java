@@ -1,4 +1,3 @@
-/*
 package covering;
 
 import common.AbstractServiceTest;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +27,7 @@ public class CoveringServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void testStandardOperator() throws NoSuchFieldException, IllegalAccessException {
+    public void testAggressiveOperator() throws NoSuchFieldException, IllegalAccessException {
         Random randomMock = new RandomMock(Collections.singletonList(5));
 
         CoveringOperator operator = new AggressiveOperator();
@@ -58,10 +56,10 @@ public class CoveringServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void testNakamuraOperator() throws NoSuchFieldException, IllegalAccessException {
-        Random randomMock = new RandomMock(Arrays.asList(5, 6, 1));
+    public void testProgressiveOperator() throws NoSuchFieldException, IllegalAccessException {
+        Random randomMock = new RandomMock(Collections.singletonList(5));
 
-        CoveringOperator operator = new NakamuraOperator();
+        CoveringOperator operator = new ProgressiveOperator();
         Field random = operator.getClass().getSuperclass().getDeclaredField("random");
         random.setAccessible(true);
         random.set(operator, randomMock);
@@ -76,19 +74,13 @@ public class CoveringServiceTest extends AbstractServiceTest {
         Symbol A = new Symbol("A", 0, SymbolType.NON_TERMINAL);
         Symbol B = new Symbol("B", 0, SymbolType.NON_TERMINAL);
         Symbol E = new Symbol("E", 0, SymbolType.NON_TERMINAL);
-        Symbol F = new Symbol("F", 0, SymbolType.NON_TERMINAL);
 
 
         List<Rule> result = coveringService.run(grammar, B, A, false, false);
 
-        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(1, result.size());
         Assertions.assertEquals(E, result.get(0).getLeft());
         Assertions.assertEquals(B, result.get(0).getRight1());
         Assertions.assertEquals(A, result.get(0).getRight2());
-        Assertions.assertEquals(F, result.get(1).getLeft());
-        Assertions.assertEquals(E, result.get(1).getRight1());
-        Assertions.assertEquals(A, result.get(1).getRight2());
     }
-
 }
-*/
