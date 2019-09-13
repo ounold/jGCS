@@ -6,9 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 @Getter
@@ -18,7 +17,7 @@ import java.util.stream.IntStream;
 public class Grammar {
 
     private List<Rule> terminalRules = new ArrayList<>();
-    private List<Rule> nonTerminalRules = new ArrayList<>();
+    private List<Rule> nonTerminalRules = Collections.synchronizedList(new ArrayList<>());
     private List<Symbol> terminalSymbols = new ArrayList<>();
     private List<Symbol> nonTerminalSymbols = new ArrayList<>();
 
@@ -61,4 +60,45 @@ public class Grammar {
         });
     }
 
+    public void addRule(Rule rule) {
+        if (rule.getRight1().getSymbolType().equals(SymbolType.TERMINAL)) {
+            terminalRules.add(rule);
+        } else {
+            nonTerminalRules.add(rule);
+        }
+    }
+
+
+    public void addNonTerminalRules(List<Rule> rules) {
+        nonTerminalRules.addAll(rules);
+    }
+
+    public void addNonTerminalRule(Rule rule) {
+        nonTerminalRules.add(rule);
+    }
+
+    public void removeRule(Rule ruleToRemove) {
+        Optional<Rule> nonTerminal = nonTerminalRules.stream()
+                .filter(new EqualRules(ruleToRemove))
+                .findFirst();
+        nonTerminal.ifPresent(rule -> nonTerminalRules.remove(rule));
+
+        Optional<Rule> terminal = terminalRules.stream()
+                .filter(new EqualRules(ruleToRemove))
+                .findFirst();
+        terminal.ifPresent(rule -> terminalRules.remove(rule));
+    }
+
+    private static class EqualRules implements Predicate<Rule> {
+        private Rule comparedRule;
+
+        public EqualRules(Rule comparedRule) {
+            this.comparedRule = comparedRule;
+        }
+
+        @Override
+        public boolean test(Rule rule) {
+            return rule.equals(comparedRule);
+        }
+    }
 }

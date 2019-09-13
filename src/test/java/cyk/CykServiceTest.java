@@ -12,28 +12,34 @@ class CykServiceTest extends AbstractServiceTest {
 
     @Test
     public void simpleTestCase() {
-        runTestCase(new SimpleGrammarTestCase());
+        runTestCase(new SimpleGrammarTestCase(), false);
     }
 
     @Test
     public void stochasticTestCase() {
-        runTestCase(new StochasticGrammarTestCase());
+        runTestCase(new StochasticGrammarTestCase(), false);
     }
 
     @Test
     public void multipleStochasticTestCase() {
-        runTestCase(new MutlipleStochasticTestCase());
+        runTestCase(new MutlipleStochasticTestCase(), false);
     }
 
     @Test
     public void multipleStochasticTestCaseWithInsides() {
         configurationService.overrideProperty("ce.calculateInsidesInCyk", "true");
-        runTestCase(new MutlipleStochasticTestCaseWithInsides());
+        runTestCase(new MutlipleStochasticTestCaseWithInsides(), false);
     }
 
-    private void runTestCase(GrammarTestCase testCase) {
+    @Test
+    public void standardCoveringTestCase() {
+        configurationService.overrideProperty("covering.operator", "AGGRESSIVE");
+        runTestCase(new StandardCoveringGrammarTestCase(), true);
+    }
+
+    private void runTestCase(GrammarTestCase testCase, boolean enableCovering) {
         //when
-        CykResult cykResult = cykService.runCyk(testCase.getSequence(), testCase.getGrammar());
+        CykResult cykResult = cykService.runCyk(testCase.getSequence(), testCase.getGrammar(), enableCovering);
 
         //then
         testCase.assertResult(cykResult);

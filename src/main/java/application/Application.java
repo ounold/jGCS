@@ -35,12 +35,14 @@ public class Application {
     public static final EtMarkersChain ETMC_DATASET = ETMC_APPLICATION.get(EtMarkers.ET_DATASET);
     public static final EtMarkersChain ETMC_EXECUTION = ETMC_DATASET.get(EtMarkers.ET_EXECUTION);
     public static final EtMarkersChain ETMC_INDUCTION = ETMC_EXECUTION.get(EtMarkers.ET_INDUCTION);
+    public static final EtMarkersChain ETM_HEURISTIC = ETMC_EXECUTION.get(EtMarkers.ET_HEURISTIC);
 
     private static final String SKIP_DUPLICATES = "grammar.skipDuplicates";
     private static final String RANDOM_PROBABILITIES = "grammar.randomProbabilities";
 
     private static final String CE_MODE = "ce.mode";
     private static final String CE_ITERATIONS = "ce.iterations";
+    private static final String CYK_COVERING_ENABLED = "cyk.coveringEnabled";
 
     private ParamsService paramsService = ParamsService.getInstance();
     private ConfigurationService configurationService = ConfigurationService.getInstance();
@@ -141,7 +143,7 @@ public class Application {
 
     private void runInduction(Integer iterations, InductionMode mode, Dataset dataset, Dataset testDataset, Grammar grammar) {
         uiService.info("Starting induction. Mode: %s. Iterations: %d.", mode, iterations);
-        executionTimeService.saveExecutionTime(ETMC_INDUCTION, () -> grammarInductionService.run(grammar, dataset, testDataset, iterations));
+        executionTimeService.saveExecutionTime(ETMC_INDUCTION, () -> grammarInductionService.run(grammar, dataset, testDataset, iterations, configuration.getBoolean(CYK_COVERING_ENABLED)));
     }
 
     private Grammar loadGrammar(Optional<Path> grammarPath, Dataset dataset) {

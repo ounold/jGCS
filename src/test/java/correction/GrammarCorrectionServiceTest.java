@@ -53,7 +53,7 @@ public class GrammarCorrectionServiceTest extends AbstractServiceTest {
         //assertThat
         Assertions.assertThrows(ApplicationException.class, () -> grammar.getSymbol("A"));
         Assertions.assertThrows(ApplicationException.class, () -> grammar.getSymbol("B"));
-        TestUtils.assertEquals(grammarIoService.parseGrammar("$->CC(0.4);$->CD(0.6);C->c(1);D->d(1)", false, false), grammar, DELTA);
+        TestUtils.assertEquals(grammarIoService.parseGrammar("$->CC(0.2);$->CD(0.3);C->c(0.4);D->d(1)", false, false), grammar, DELTA);
     }
 
     @Test

@@ -30,11 +30,15 @@ public class ProbabilityArray {
     }
 
     public synchronized ProbabilityCell add(int i, int j, Symbol symbol, double value) {
-        if (table[i][j][symbol.getIndex()] == ProbabilityCell.EMPTY_CELL)
-            table[i][j][symbol.getIndex()] = new ProbabilityCell(value);
-        else
-            table[i][j][symbol.getIndex()].add(value);
-        return table[i][j][symbol.getIndex()];
+        try {
+            if (table[i][j][symbol.getIndex()] == ProbabilityCell.EMPTY_CELL)
+                table[i][j][symbol.getIndex()] = new ProbabilityCell(value);
+            else
+                table[i][j][symbol.getIndex()].add(value);
+            return table[i][j][symbol.getIndex()];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
     }
 
     public ProbabilityCell getStartCell(Symbol symbol) {
