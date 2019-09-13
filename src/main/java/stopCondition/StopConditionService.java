@@ -15,6 +15,8 @@ public class StopConditionService {
     private static final String EXPECTED_MT_DECREASE = "sc.expectedMtDecrease";
     private static final String MT_DECREASE_IN_STEPS = "sc.mtDecreaseInSteps";
 
+    private static final String NUM_OF_ITERATIONS = "sc.iterations";
+
     private Configuration configuration = ConfigurationService.getConfiguration();
 
     private EvaluationService evaluationService = EvaluationService.getInstance();
@@ -27,6 +29,13 @@ public class StopConditionService {
     }
 
     public void initializeStopConditions() {
+        Integer numberOfIterations = configuration.getInteger(NUM_OF_ITERATIONS);
+
+        if (numberOfIterations != null) {
+            stopConditionRepository.insert(new IterationStopCondition(numberOfIterations, evaluationService));
+            uiService.info("Maximum number of algorithm iterations: ", numberOfIterations);
+        }
+
         Double expectedSensitivity = configuration.getDouble(EXPECTED_SENSITIVITY);
         Double expectedSpecificity = configuration.getDouble(EXPECTED_SPECIFICITY);
 

@@ -1,6 +1,5 @@
 package rulesTable;
 
-import application.ApplicationException;
 import grammar.Rule;
 import grammar.Symbol;
 import lombok.Getter;
@@ -44,7 +43,7 @@ public class RulesTable {
     }
 
     public CellRule getCellRule(int i, int j, Rule rule) {
-        return table[i][j].getCellRules().stream().filter(cr -> cr.getRule().equals(rule)).findAny().orElseThrow(() -> new ApplicationException("Rule does not exist"));
+        return table[i][j].getCellRules().stream().filter(cr -> cr.getRule().equals(rule)).findAny().orElse(null);
     }
 
     public int getLength(){

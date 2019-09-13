@@ -9,6 +9,10 @@ import rulesTable.PureCellRule;
 @Deprecated
 public class PureCykProcessor extends CykProcessor {
 
+    public PureCykProcessor(boolean enableCovering) {
+        super(enableCovering);
+    }
+
     @Override
     protected CellRule createCellRule(int i, int j, int k, Rule rule, ProbabilityCell probabilityCell) {
         return new PureCellRule(rule, new Coordinate(k, j), new Coordinate(i - k - 1, j + k + 1), new Coordinate(i, j));

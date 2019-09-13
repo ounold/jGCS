@@ -20,6 +20,8 @@ public class SimpleTestGrammar implements TestGrammar {
     public final Symbol D = new Symbol("D", 4, SymbolType.NON_TERMINAL);
     public final Symbol E = new Symbol("E", 5, SymbolType.NON_TERMINAL);
     public final Symbol F = new Symbol("F", 6, SymbolType.NON_TERMINAL);
+    public final Symbol G = new Symbol("G", 7, SymbolType.NON_TERMINAL);
+    public final Symbol H = new Symbol("H", 8, SymbolType.NON_TERMINAL);
 
     public final Rule A_a = new Rule(A, a, null, 1);
     public final Rule B_b = new Rule(B, b, null, 1);
@@ -33,7 +35,7 @@ public class SimpleTestGrammar implements TestGrammar {
     public Grammar getGrammar() {
         Grammar result = new Grammar();
         result.setTerminalSymbols(Arrays.asList(a, b));
-        result.setNonTerminalSymbols(Arrays.asList(S, A, B, C, D, E, F));
+        result.setNonTerminalSymbols(Arrays.asList(S, A, B, C, D, E, F, G, H));
         List<Rule> terminalRules = new ArrayList<>();
         terminalRules.add(A_a);
         terminalRules.add(B_b);

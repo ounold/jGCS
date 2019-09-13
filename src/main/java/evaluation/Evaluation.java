@@ -11,6 +11,8 @@ public class Evaluation {
 
     private final String grammar;
 
+    private final int grammarSize;
+
     private final ConfusionMatrix evaluation;
 
 }

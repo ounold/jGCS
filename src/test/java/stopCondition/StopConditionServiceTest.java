@@ -36,8 +36,8 @@ class StopConditionServiceTest extends AbstractServiceTest {
         initValueStopConditionParams();
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(10, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
-        evaluationService.saveEvaluation(12, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(10, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(12, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
 
         // when
         assertTrue(stopConditionService.shouldStop());
@@ -49,8 +49,8 @@ class StopConditionServiceTest extends AbstractServiceTest {
         initValueStopConditionParams();
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(15, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(20, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(15, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(20, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
 
         // when
         assertFalse(stopConditionService.shouldStop());
@@ -63,9 +63,9 @@ class StopConditionServiceTest extends AbstractServiceTest {
         initDiffStopConditionParams();
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(10, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(21, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(33, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(10, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(21, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(33, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
 
         // when
         assertTrue(stopConditionService.shouldStop());
@@ -77,9 +77,9 @@ class StopConditionServiceTest extends AbstractServiceTest {
         initDiffStopConditionParams();
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(11, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(22, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
-        evaluationService.saveEvaluation(33, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(11, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(22, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(33, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
 
         // when
         assertFalse(stopConditionService.shouldStop());
@@ -91,8 +91,8 @@ class StopConditionServiceTest extends AbstractServiceTest {
         initDiffStopConditionParams();
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(2, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(3, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(2, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(3, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
 
         // when
         assertFalse(stopConditionService.shouldStop());
@@ -105,9 +105,9 @@ class StopConditionServiceTest extends AbstractServiceTest {
         initDiffStopConditionParams();
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(3, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(4, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(5, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(3, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(4, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(5, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
 
         // when
         assertTrue(stopConditionService.shouldStop());
@@ -118,9 +118,9 @@ class StopConditionServiceTest extends AbstractServiceTest {
         // when
         stopConditionService.initializeStopConditions();
 
-        evaluationService.saveEvaluation(3, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(6, () -> new Evaluation("", new ConfusionMatrix(1, 0, 1, 0)));
-        evaluationService.saveEvaluation(9, () -> new Evaluation("", new ConfusionMatrix(1, 1, 1, 1)));
+        evaluationService.saveEvaluation(3, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(6, () -> new Evaluation("", 1, new ConfusionMatrix(1, 0, 1, 0)));
+        evaluationService.saveEvaluation(9, () -> new Evaluation("", 1, new ConfusionMatrix(1, 1, 1, 1)));
 
         // when
         assertFalse(stopConditionService.shouldStop());

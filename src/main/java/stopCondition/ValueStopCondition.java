@@ -19,9 +19,12 @@ public class ValueStopCondition implements StopCondition {
 
     @Override
     public boolean shouldStop() {
-        ConfusionMatrix confusionMatrix = evaluationService.getLastResult().getEvaluation();
-        if (confusionMatrix != null) {
-            return confusionMatrix.getSensitivity() >= expectedSensitivity && confusionMatrix.getSpecificity() >= expectedSpecificity;
+        if (evaluationService.getLastResult() != null) {
+            ConfusionMatrix confusionMatrix = evaluationService.getLastResult().getEvaluation();
+            if (confusionMatrix != null) {
+                return confusionMatrix.getSensitivity() >= expectedSensitivity && confusionMatrix.getSpecificity() >= expectedSpecificity;
+            }
+            return false;
         }
         return false;
     }

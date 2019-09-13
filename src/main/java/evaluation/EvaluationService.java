@@ -45,10 +45,10 @@ public class EvaluationService {
     public Evaluation evaluateDataset(Dataset dataset, Grammar grammar) {
         ConfusionMatrix confusionMatrix = new ConfusionMatrix();
         dataset.getSequences().forEach(sequence -> {
-            CykResult cykResult = cykService.runCyk(sequence, grammar);
+            CykResult cykResult = cykService.runCyk(sequence, grammar, false);
             confusionMatrix.update(sequence.isPositive(), cykResult.isParsed());
         });
-        return new Evaluation(grammarIoService.writeGrammar(grammar), confusionMatrix);
+        return new Evaluation(grammarIoService.writeGrammar(grammar), grammar.getRules().size(), confusionMatrix);
     }
 
     public void saveEvaluationConditionally(Integer iteration, Supplier<Evaluation> evaluationSupplier) {
@@ -68,7 +68,7 @@ public class EvaluationService {
     public void writeEvaluationHeaderToCSV(String evaluationOutput) {
         fileService.appendToCSV(
                 evaluationOutput,
-                Collections.singletonList(Arrays.asList("Configuration", "Dataset", "Execution", "Iteration", "TP", "FP", "TN", "FN", "Sensitivity", "Precision", "Specificity", "F1"))
+                Collections.singletonList(Arrays.asList("Configuration", "Dataset", "Execution", "Iteration", "TP", "FP", "TN", "FN", "Sensitivity", "Precision", "Specificity", "F1", "Grammar size"))
         );
     }
 
@@ -92,6 +92,7 @@ public class EvaluationService {
                             result.add(value.getPrecision());
                             result.add(value.getSpecificity());
                             result.add(value.getF1());
+                            result.add(e.getValue().getGrammarSize());
                             return result;
                         }).collect(Collectors.toList())
         );

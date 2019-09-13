@@ -148,13 +148,13 @@ public abstract class InsideOutsideServiceTest extends AbstractInsideOutsideTest
         insideOutsideService.updateRulesProbabilities(grammar);
 
         // Updated
-        assertEquals(A_a.apply(grammar).getProbability(), .4, DELTA);
-        assertEquals(B_b.apply(grammar).getProbability(), .7, DELTA);
-        assertEquals(C_c.apply(grammar).getProbability(), .55, DELTA);
-        assertEquals(S_AB.apply(grammar).getProbability(), .099038461490385, DELTA);
-        assertEquals(S_BC.apply(grammar).getProbability(), .325961538509615, DELTA);
-        assertEquals(S_AS.apply(grammar).getProbability(), .625961538509615, DELTA);
-        assertEquals(S_SC.apply(grammar).getProbability(), .399038461490385, DELTA);
+        assertEquals(A_a.apply(grammar).getProbability(), 1., DELTA);
+        assertEquals(B_b.apply(grammar).getProbability(), 1., DELTA);
+        assertEquals(C_c.apply(grammar).getProbability(), 1., DELTA);
+        assertEquals(S_AB.apply(grammar).getProbability(), .09615384615384617, DELTA);
+        assertEquals(S_BC.apply(grammar).getProbability(), .4038461538461538, DELTA);
+        assertEquals(S_AS.apply(grammar).getProbability(), .4038461538461538, DELTA);
+        assertEquals(S_SC.apply(grammar).getProbability(), .09615384615384616, DELTA);
 
         // Not updated
         assertEquals(A_BA.apply(grammar).getProbability(), 1, .001);
