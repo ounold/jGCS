@@ -29,23 +29,67 @@ public class Grammar {
     }
 
     public Symbol getSymbol(String name) {
-        return terminalSymbols.stream()
-                .filter(s -> s.getValue().equals(name))
-                .findFirst()
-                .orElseGet(() -> nonTerminalSymbols.stream()
-                        .filter(s -> s.getValue().equals(name))
-                        .findFirst().orElseThrow(() -> new ApplicationException(String.format("Symbol %s not found", name)))
-                );
+        Symbol terminalSymbol = findTerminalSymbol(name);
+        if (terminalSymbol != null) {
+            return terminalSymbol;
+        }
+
+        Symbol nonTerminalSymbol = findNonTerminalSymbol(name);
+        if (nonTerminalSymbol != null) {
+            return nonTerminalSymbol;
+        }
+
+        throw new ApplicationException(String.format("Symbol %s not found", name));
+    }
+
+    private Symbol findTerminalSymbol(String name) {
+        for (Symbol symbol : terminalSymbols) {
+            if (symbol.getValue().equals(name)) {
+                return symbol;
+            }
+        }
+        return null;
+    }
+
+    private Symbol findNonTerminalSymbol(String name) {
+        for (Symbol symbol : nonTerminalSymbols) {
+            if (symbol.getValue().equals(name)) {
+                return symbol;
+            }
+        }
+        return null;
     }
 
     public Rule getRule(String definition) {
-        return terminalRules.stream()
-                .filter(r -> r.toString().equals(definition))
-                .findFirst()
-                .orElseGet(() -> nonTerminalRules.stream()
-                        .filter(r -> r.toString().equals(definition))
-                        .findFirst().orElseThrow(() -> new ApplicationException(String.format("Rule %s not found", definition)))
-                );
+        Rule terminalRule = findTerminalRule(definition);
+        if (terminalRule != null) {
+            return terminalRule;
+        }
+
+        Rule nonTerminalRule = findNonTerminalRule(definition);
+        if (nonTerminalRule != null) {
+            return nonTerminalRule;
+        }
+
+        throw new ApplicationException(String.format("Rule %s not found", definition));
+    }
+
+    private Rule findTerminalRule(String definition) {
+        for (Rule rule : terminalRules) {
+            if (rule.toString().equals(definition)) {
+                return rule;
+            }
+        }
+        return null;
+    }
+
+    private Rule findNonTerminalRule(String definition) {
+        for (Rule rule : nonTerminalRules) {
+            if (rule.toString().equals(definition)) {
+                return rule;
+            }
+        }
+        return null;
     }
 
     public void removeNonTerminalRules(Collection<Rule> rules) {
