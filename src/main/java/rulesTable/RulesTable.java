@@ -4,6 +4,7 @@ import grammar.Rule;
 import grammar.Symbol;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,10 +55,20 @@ public class RulesTable {
         return table[table.length - 1][0];
     }
 
-    public List<CellRule> getStartCellRules(){
-        return getStartCellRulesStream().collect(Collectors.toList());
+    public List<CellRule> getStartCellRules() {
+        List<CellRule> startCellRules = new ArrayList<>();
+        for (CellRule cellRule : getStartTableCell().getCellRules()) {
+            if (cellRule.isStart()) {
+                startCellRules.add(cellRule);
+            }
+        }
+        return startCellRules;
     }
 
+    @Deprecated
+    /*
+        Deprecated due to performance issues. Use getStartCellRules() instead and iterate through it with standard for loop.
+     */
     public Stream<CellRule> getStartCellRulesStream(){
         return getStartTableCell().getCellRules().stream().filter(CellRule::isStart);
     }

@@ -54,30 +54,28 @@ public class InsideOutsideService {
 
     public void updateRulesProbabilities(Grammar grammar) {
         InductionMode mode = configuration.getEnum(InductionMode::valueOf, CE_MODE);
-        double velocityFactor = configuration.getDouble(CE_VELOCITY_FACTOR);
-        grammar.getRules()
-                .stream()
-                .filter(r -> r.getPositiveCount() != 0 || r.getNegativeCount() != 0)
-                .forEach(rule -> {
-//                    LOGGER.info("Rule: {}", rule.toFullString());
-                    double sumOfAllPositiveCountsWithLeftSymbol = sumAllPositiveCountsWithLeftSymbol(grammar, rule);
-                    double newProbability = calculateNewProbability(rule, sumOfAllPositiveCountsWithLeftSymbol, mode);
-                    if (newProbability > 1e-5) {
-                        rule.setProbability(newProbability);
-                    } else {
-                        rule.setProbability(0);
-                    }
-//                    LOGGER.info("Rule: {}", rule.toFullString());
-//                    LOGGER.info("Probability: {}", newProbability);
-//                    LOGGER.info("CE: {}", ceFactor);
-                });
+
+        for (Rule rule : grammar.getRules()) {
+            if (rule.getPositiveCount() != 0 || rule.getNegativeCount() != 0) {
+                double sumOfAllPositiveCountsWithLeftSymbol = sumAllPositiveCountsWithLeftSymbol(grammar, rule);
+                double newProbability = calculateNewProbability(rule, sumOfAllPositiveCountsWithLeftSymbol, mode);
+                if (newProbability > 1e-5) {
+                    rule.setProbability(newProbability);
+                } else {
+                    rule.setProbability(0);
+                }
+            }
+        }
     }
 
     private double sumAllPositiveCountsWithLeftSymbol(Grammar grammar, Rule rule) {
-        return grammar.getRules().stream()
-                .filter(r -> r.getLeft() == rule.getLeft())
-                .mapToDouble(Rule::getPositiveCount)
-                .sum();
+        double sum = 0.0;
+        for (Rule grammarRule : grammar.getRules()) {
+            if (grammarRule.getLeft() == rule.getLeft()) {
+                sum = sum + grammarRule.getPositiveCount();
+            }
+        }
+        return sum;
     }
 
     private double calculateNewProbability(Rule rule, double sumAllPositiveCountsWithLeftSymbol, InductionMode mode) {
@@ -100,15 +98,19 @@ public class InsideOutsideService {
     }
 
     public void resetInsideOutsideValuesAndCounts(Grammar grammar) {
-        grammar.getRules().forEach(this::resetInsideOutsideValuesAndCounts);
+        for (Rule rule : grammar.getRules()) {
+            resetInsideOutsideValuesAndCounts(rule);
+        }
     }
 
     public void resetInsideOutsideValues(Grammar grammar) {
-        grammar.getRules().forEach(this::resetInsideOutsideValues);
+        for (Rule rule : grammar.getRules()) {
+            resetInsideOutsideValues(rule);
+        }
     }
 
     public void updateCounts(Grammar grammar, double sentenceProbability, IoSequence sequence) {
-        grammar.getRules().forEach(rule -> {
+        for (Rule rule : grammar.getRules()) {
             LOGGER.debug("Calculating counts of {} with sentenceProbability {}", rule.getDefinition(), sentenceProbability);
             if (sentenceProbability > Math.pow(10, -10)) {
                 double relativeProbability = rule.getProbability() / sentenceProbability;
@@ -120,7 +122,7 @@ public class InsideOutsideService {
                 if (sequence.isPositive())
                     rule.addCountInPositives(newCount);
             }
-        });
+        }
     }
 
     private void resetInsideOutsideValuesAndCounts(Rule rule) {
