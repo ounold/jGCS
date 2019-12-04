@@ -1,0 +1,72 @@
+1 20 d a a e c a c a c a a a e b b e e e e a
+1 17 c a a a e a a e c a b b e e e b b
+1 19 a a e c a c a c a b b e e e c a b b e
+0 17 a a e a e c a b b a e e c a b b e
+1 20 d c a c a a a e c a a a e b b e e e e a
+0 15 e a c a b e b e a a a e b e e
+0 9 a a e e b b e a b
+1 17 a a e b b a a e c a c a b b e e e
+0 7 d a a e b b b
+1 17 c a a a e a a e b b e e c a b b e
+1 14 a a e a a e b b e c a b b e
+0 19 a c a c a a a a e a e a b b e a e e e
+0 20 c a b b c a c a a a e c a e c b e e e e
+0 8 d e e a b b e a
+1 19 c a c a b b e c a c a a a e b b e e e
+0 18 c a a a c a a e b b e e b c a b b e
+1 16 d c a a a e c a c a b b e e e a
+0 10 c a c a c c b e e a
+1 11 a a e a a e b b e b b
+1 20 a a e c a c a c a a a e b b e e e e b b
+1 9 c a c a b b e b b
+0 14 c a b b a a c a a e b b e e
+0 18 a a e c d a a a e c d b b e e e b b
+1 13 c a a a e b b e c a b b e
+0 19 b a a c c a c a e a c b b e e e e b b
+1 20 d a a e c a c a a a e c a b b e e e e a
+1 6 c a b b b b
+0 20 d e a e c a b d e d a a e c a b b e e e
+1 19 c a c a c a b b e e a a e c a b b e e
+1 16 c a b b c a c a a a e b b e e e
+0 18 c c a c a c a c a b b e e e b e b e
+0 20 a a e b a a a e c a c a c a b b e e e e
+0 18 c a a a a e c a b d e e a a e b b e
+1 18 a a e b b c a a a e a a e b b e e e
+0 20 a a e b b a a e a a a e a a e b b e e e
+0 17 c c b c a a a e d a a e b b e e e
+1 20 c a c a a a e a a e c a b b e e e e b b
+0 15 a a e b b c a c a a c b b e e
+1 20 d c a c a c a a a e a a e b b e e e e a
+1 18 c a a a e b b e a a e a a e b b e e
+0 20 a a b e c a c a c a c a b b e e e e b b
+0 19 d a a e e a e a a e c a b b e e b e a
+1 18 c a b b a a e a a e a a e b b e e e
+0 19 c a c a b b c c a a c a c a b b e e e
+0 12 a a e a a b e c a d b e
+1 18 a a e a a e c a a a e b b e e e b b
+0 14 c a b b a e e a a e b b e e
+1 20 a a e b b c a a a e c a c a b b e e e e
+0 16 c a a b a a e c a c a b b e e b
+1 15 c a c a c a c a b b e e e b b
+1 19 c a c a a a e c a b b e e e c a b b e
+1 20 c a b b c a a a e c a a a e b b e e e e
+0 16 a b e c a c a a e b b e e e b b
+1 17 a a e b b c a a a e c a b b e e e
+1 15 c a b b c a c a c a b b e e e
+1 20 c a c a a a e b b e e a a e c a b b e e
+0 17 a a e c a d a a e c a b b e e b b
+1 17 d c a a a e a a e c a b b e e e a
+0 19 c a b b a a a e e a a a a e b b e e e
+1 18 d c a c a c a c a c a b b e e e e a
+0 13 a a b b a a e a b b b a e
+0 15 d c a a e a a e c a b b e e a
+1 16 c a c a c a a a e b b e e e b b
+1 7 a a e b b b b
+0 17 c a a b b a e a e a c a b b e e e
+1 12 d c a c a c a b b e e a
+1 10 d c a a a e b b e a
+0 20 a a e a a e c a c a b b e e c a b b a e
+0 17 c b a d a a e c e b b e e e b d b
+1 17 d a a e c a c a a a e b b e e e a
+0 10 a e a a e b b a b b
+1 15 d a a e a a e a a e b b e e a

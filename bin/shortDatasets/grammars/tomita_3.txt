@@ -1,1 +1,0 @@
-$->BA;C->BA;C->BB;B->C$;$->AA;$->BB;D->AB;A->$C;B->AA;B->$A;$->AE;$->$A;E->A$;H->$B;$->B$;$->HB;A->a;B->b

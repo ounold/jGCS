@@ -1,0 +1,1 @@
+java -jar JGCS.jar -d longDatasets/trainDatasets/train1.txt -v longDatasets/testDatasets/test1.txt -o results/grammar_1.txt -e results/results_1.csv -r 10 -c config.properties 
